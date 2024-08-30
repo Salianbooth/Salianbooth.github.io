@@ -277,7 +277,7 @@
 </ul>
 </li>
 </ul>
-<h1 id="1-创建线程"><a href="#1-创建线程" class="headerlink" title="1.创建线程"></a>1.创建线程</h1><p>每一个线程都有一个唯一的线程ID，ID类型为pthread_t，这个ID是一个无符号长整形数，如果想要得到当前线程的线程ID，可以调用如下函数：</p>
+<h1 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h1><h2 id="1-创建线程"><a href="#1-创建线程" class="headerlink" title="1.创建线程"></a>1.创建线程</h2><p>每一个线程都有一个唯一的线程ID，ID类型为pthread_t，这个ID是一个无符号长整形数，如果想要得到当前线程的线程ID，可以调用如下函数：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">pthread_t</span> <span class="title function_">pthread_self</span><span class="params">(<span class="type">void</span>)</span>;	<span class="comment">// 返回当前线程的线程ID</span></span><br></pre></td></tr></table></figure>
 
 <p>在一个进程中调用线程创建函数，就可得到一个子线程，和进程不同，需要给每一个创建出的线程指定一个处理函数，否则这个线程无法工作。</p>
@@ -339,12 +339,12 @@
 <li><strong>成功时返回 <code>0</code></strong>: 表示线程创建成功。</li>
 <li><strong>失败时返回错误码</strong>: 表示线程创建失败。例如，<code>EAGAIN</code> 表示资源不足导致创建线程失败，<code>EINVAL</code> 表示传递的属性无效，<code>EPERM</code> 表示没有足够的权限。</li>
 </ul>
-<h1 id="2-线程退出"><a href="#2-线程退出" class="headerlink" title="2.线程退出"></a>2.线程退出</h1><p>在编写多线程程序的时候，如果想要让线程退出，但是不会导致虚拟地址空间的释放（针对于主线程），我们就可以调用线程库中的线程退出函数，只要调用该函数当前线程就马上退出了，并且不会影响到其他线程的正常运行，不管是在子线程或者主线程中都可以使用。</p>
+<h2 id="2-线程退出"><a href="#2-线程退出" class="headerlink" title="2.线程退出"></a>2.线程退出</h2><p>在编写多线程程序的时候，如果想要让线程退出，但是不会导致虚拟地址空间的释放（针对于主线程），我们就可以调用线程库中的线程退出函数，只要调用该函数当前线程就马上退出了，并且不会影响到其他线程的正常运行，不管是在子线程或者主线程中都可以使用。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">pthread_exit</span><span class="params">(<span class="type">void</span> *retval)</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 <p>参数: 线程退出的时候携带的数据，当前子线程的主线程会得到该数据。如果不需要使用，指定为NULL<br>那么退出时传出的参数要如何使用呢？这就需要和我们接下来的线程回收函数配合使用</p>
-<h1 id="3-线程回收"><a href="#3-线程回收" class="headerlink" title="3.线程回收"></a>3.线程回收</h1><p>线程和进程一样，<strong>子线程退出的时候其内核资源主要由主线程回收</strong>，线程库中提供的线程回收函叫做pthread_join()，这个函数是一个阻塞函数，如果还有子线程在运行，调用该函数就会阻塞，子线程退出函数解除阻塞进行资源的回收，函数被调用一次，只能回收一个子线程，如果有多个子线程则需要循环进行回收。</p>
+<h2 id="3-线程回收"><a href="#3-线程回收" class="headerlink" title="3.线程回收"></a>3.线程回收</h2><p>线程和进程一样，<strong>子线程退出的时候其内核资源主要由主线程回收</strong>，线程库中提供的线程回收函叫做pthread_join()，这个函数是一个阻塞函数，如果还有子线程在运行，调用该函数就会阻塞，子线程退出函数解除阻塞进行资源的回收，函数被调用一次，只能回收一个子线程，如果有多个子线程则需要循环进行回收。</p>
 <p>另外通过线程回收函数还可以获取到子线程退出时传递出来的数据，函数原型如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="comment">// 这是一个阻塞函数, 子线程在运行这个函数就阻塞</span></span><br><span class="line"><span class="comment">// 子线程退出, 函数解除阻塞, 回收对应的子线程资源, 类似于回收进程使用的函数 wait()</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_join</span><span class="params">(<span class="type">pthread_t</span> thread, <span class="type">void</span> **retval)</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -356,14 +356,14 @@
 </li>
 </ul>
 <p>返回值：线程回收成功返回0，回收失败返回错误号。</p>
-<h2 id="回收子线程时数据缺失"><a href="#回收子线程时数据缺失" class="headerlink" title="回收子线程时数据缺失"></a>回收子线程时数据缺失</h2><blockquote>
+<h3 id="回收子线程时数据缺失"><a href="#回收子线程时数据缺失" class="headerlink" title="回收子线程时数据缺失"></a>回收子线程时数据缺失</h3><blockquote>
 <p>当我们想回收子线程时接受它传出的数据，但是数据存放在栈空间上，在子线程结束后会被回收，这里我们将用到2种解决方法</p>
 </blockquote>
-<h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>将要传出的数据设为全局变量</p>
+<h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p>将要传出的数据设为全局变量</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pthread_create.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> num;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span> <span class="title">t</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">working</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是子线程，线程ID：%ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">9</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// if (i == 6)</span></span><br><span class="line">        <span class="comment">// &#123;</span></span><br><span class="line">        <span class="comment">//     pthread_exit(NULL); // 直接退出子线程</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;child == i: = %d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 我们在这定义的t，此时此刻是在子线程所占用的堆内存上，这一块是线程共享的，当子线程退出时，会将占用的归还</span></span><br><span class="line">    <span class="comment">//  struct Test t;</span></span><br><span class="line">    t.num = <span class="number">100</span>;</span><br><span class="line">    t.age = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    pthread_exit(&amp;t);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">pthread_t</span> tid;</span><br><span class="line">    <span class="comment">// 创建了一个线程，为tid，属性为空，执行的函数为working，传入的参数为NULL</span></span><br><span class="line">    pthread_create(&amp;tid, <span class="literal">NULL</span>, working, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;子线程创建成功，线程ID：%ld\n&quot;</span>, tid);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是主线程，线程ID：%ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="comment">// for (int i = 0; i &lt; 3; ++i)</span></span><br><span class="line">    <span class="comment">// &#123;</span></span><br><span class="line">    <span class="comment">//     printf(&quot;i = %d\n&quot;, i);</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;===========主线程回收子线程========\n&quot;</span>);</span><br><span class="line">    <span class="type">void</span> *ptr;</span><br><span class="line">    <span class="comment">// 由于exit传出的数据为一个二级指针，二级指针-&gt;指向一级指针的地址，所以我们这里用 &amp;指针的地址来接收</span></span><br><span class="line">    pthread_join(tid, &amp;ptr);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Test</span> *<span class="title">pt</span> =</span> (<span class="keyword">struct</span> Test *)ptr;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num: %d, age = %d\n&quot;</span>, pt-&gt;num, pt-&gt;age);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主线程调用退出函数退出, 地址空间不会被释放</span></span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// sleep(2);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="为什么需要分配在堆上？"><a href="#为什么需要分配在堆上？" class="headerlink" title="为什么需要分配在堆上？"></a>为什么需要分配在堆上？</h3><ol>
+<h4 id="为什么需要分配在堆上？"><a href="#为什么需要分配在堆上？" class="headerlink" title="为什么需要分配在堆上？"></a>为什么需要分配在堆上？</h4><ol>
 <li><p><strong>生命周期</strong>：如果你希望 <code>t</code> 在函数返回后仍然有效，你就需要将其分配在堆上，因为栈上的内存会在函数返回时自动释放。</p>
 </li>
 <li><p><strong>内存大小</strong>：栈的大小有限，如果你的结构体非常大或者需要动态分配大量结构体，栈可能无法满足需求。这时，使用堆可以避免栈溢出。</p>
@@ -371,10 +371,10 @@
 <li><p><strong>动态分配</strong>：如果需要在运行时动态决定分配多少个 <code>Test</code> 结构体（例如通过用户输入或配置文件），就需要使用堆分配。</p>
 </li>
 </ol>
-<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h2><p>将主线程上的变量传给子线程使用</p>
+<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>将主线程上的变量传给子线程使用</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pthread_create.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> num;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// struct Test t;</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">working</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是子线程，线程ID：%ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">9</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// if (i == 6)</span></span><br><span class="line">        <span class="comment">// &#123;</span></span><br><span class="line">        <span class="comment">//     pthread_exit(NULL); // 直接退出子线程</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;child == i: = %d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 我们在这定义的t，此时此刻是在子线程所占用的堆内存上，这一块是线程共享的，当子线程退出时，会将占用的归还</span></span><br><span class="line">    <span class="comment">//  struct Test t;</span></span><br><span class="line">    <span class="comment">// 同样，这里尽量别用static解决，这样会导致这一块内存收回不了</span></span><br><span class="line">    <span class="comment">// static struct Test t;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这样我们通过主线程传入的 结构体 t，来进行相应的操作</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Test</span> *<span class="title">t</span> =</span> (<span class="keyword">struct</span> Test *)arg;</span><br><span class="line">    t-&gt;num = <span class="number">100</span>;</span><br><span class="line">    t-&gt;age = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    pthread_exit(t);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ---------------方法二----------</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Test</span> <span class="title">t</span>;</span></span><br><span class="line">    <span class="type">pthread_t</span> tid;</span><br><span class="line">    <span class="comment">// 创建了一个线程，为tid，属性为空，执行的函数为working，传入的参数为NULL</span></span><br><span class="line">    pthread_create(&amp;tid, <span class="literal">NULL</span>, working, &amp;t);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;子线程创建成功，线程ID：%ld\n&quot;</span>, tid);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是主线程，线程ID：%ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="comment">// for (int i = 0; i &lt; 3; ++i)</span></span><br><span class="line">    <span class="comment">// &#123;</span></span><br><span class="line">    <span class="comment">//     printf(&quot;i = %d\n&quot;, i);</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ----------方法一---------------</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;===========主线程回收子线程========\n&quot;</span>);</span><br><span class="line">    <span class="type">void</span> *ptr;</span><br><span class="line">    <span class="comment">// 由于exit传出的数据为一个二级指针，二级指针-&gt;指向一级指针的地址，所以我们这里用 &amp;指针的地址来接收</span></span><br><span class="line">    pthread_join(tid, &amp;ptr);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Test</span> *<span class="title">pt</span> =</span> (<span class="keyword">struct</span> Test *)ptr;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;num: %d, age = %d\n&quot;</span>, pt-&gt;num, pt-&gt;age);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主线程调用退出函数退出, 地址空间不会被释放</span></span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// sleep(2);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="线程分离"><a href="#线程分离" class="headerlink" title="线程分离"></a>线程分离</h1><blockquote>
+<h2 id="4-线程分离"><a href="#4-线程分离" class="headerlink" title="4.线程分离"></a>4.线程分离</h2><blockquote>
 <p>在某些情况下，程序中的主线程有属于自己的业务处理流程，如果让主线程负责子线程的资源回收，调用pthread_join()只要子线程不退出主线程就会一直被阻塞，主要线程的任务也就不能被执行了。</p>
 </blockquote>
 <p>在线程库函数中为我们提供了线程分离函数pthread_detach()，调用这个函数之后指定的子线程就可以和主线程分离，当子线程退出的时候，其占用的内核资源就被系统的其他进程接管并回收了。线程分离之后在主线程中使用pthread_join()就回收不到子线程资源了。</p>
@@ -383,7 +383,7 @@
 <p>下面的代码中，在主线程中创建子线程，并调用线程分离函数，实现了主线程和子线程的分离：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pthread_create.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Test</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> num;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> *<span class="title">working</span><span class="params">(<span class="type">void</span> *arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是子线程，线程ID：%ld\n&quot;</span>, <span class="built_in">pthread_self</span>());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">9</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;child == i: = %d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// ---------------方法二----------</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">Test</span> t;</span><br><span class="line">    <span class="type">pthread_t</span> tid;</span><br><span class="line">    <span class="comment">// 创建了一个线程，为tid，属性为空，执行的函数为working，传入的参数为NULL</span></span><br><span class="line">    <span class="built_in">pthread_create</span>(&amp;tid, <span class="literal">NULL</span>, working, &amp;t);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;子线程创建成功，线程ID：%ld\n&quot;</span>, tid);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是主线程，线程ID：%ld\n&quot;</span>, <span class="built_in">pthread_self</span>());</span><br><span class="line">    <span class="comment">// for (int i = 0; i &lt; 3; ++i)</span></span><br><span class="line">    <span class="comment">// &#123;</span></span><br><span class="line">    <span class="comment">//     printf(&quot;i = %d\n&quot;, i);</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line">    <span class="built_in">pthread_detach</span>(tid);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主线程调用退出函数退出, 地址空间不会被释放</span></span><br><span class="line">    <span class="built_in">pthread_exit</span>(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// sleep(2);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="小剧场–线程分离和线程回收"><a href="#小剧场–线程分离和线程回收" class="headerlink" title="小剧场–线程分离和线程回收"></a>小剧场–线程分离和线程回收</h1><p>在多线程编程中，“线程分离”和“线程回收”是两种管理线程生命周期的方式，它们处理线程结束后的资源管理问题。</p>
+<h2 id="小剧场–线程分离和线程回收"><a href="#小剧场–线程分离和线程回收" class="headerlink" title="小剧场–线程分离和线程回收"></a>小剧场–线程分离和线程回收</h2><p>在多线程编程中，“线程分离”和“线程回收”是两种管理线程生命周期的方式，它们处理线程结束后的资源管理问题。</p>
 <h3 id="线程分离（Detached-Thread）"><a href="#线程分离（Detached-Thread）" class="headerlink" title="线程分离（Detached Thread）"></a>线程分离（Detached Thread）</h3><p>线程分离指的是将线程的资源自动释放，不需要主线程显式地等待和回收。</p>
 <h4 id="主要特点："><a href="#主要特点：" class="headerlink" title="主要特点："></a>主要特点：</h4><ol>
 <li><p><strong>自动资源释放</strong>：一旦线程执行完毕，系统会自动释放与该线程相关的资源，无需其他线程显式地调用 <code>pthread_join</code> 进行回收。</p>
@@ -430,7 +430,7 @@
 <li><strong>线程分离</strong>：启动一个后台日志记录线程，记录的工作与主程序无关，也不需要主线程等待其完成。</li>
 <li><strong>线程回收</strong>：并行计算任务，主线程需要等待所有子线程计算完毕并汇总结果。</li>
 </ul>
-<h1 id="其他线程函数"><a href="#其他线程函数" class="headerlink" title="其他线程函数"></a>其他线程函数</h1><h2 id="1-线程取消"><a href="#1-线程取消" class="headerlink" title="1.线程取消"></a>1.线程取消</h2><p>线程取消的意思就是在某些特定情况下在一个线程中杀死另一个线程。使用这个函数杀死一个线程需要分两步：</p>
+<h2 id="其他线程函数"><a href="#其他线程函数" class="headerlink" title="其他线程函数"></a>其他线程函数</h2><h2 id="1-线程取消"><a href="#1-线程取消" class="headerlink" title="1.线程取消"></a>1.线程取消</h2><p>线程取消的意思就是在某些特定情况下在一个线程中杀死另一个线程。使用这个函数杀死一个线程需要分两步：</p>
 <p>在线程A中调用线程取消函数pthread_cancel，指定杀死线程B，这时候线程B是死不了的<br>在线程B中进程一次系统调用（从用户区切换到内核区），否则线程B可以一直运行。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="comment">// 参数是子线程的线程ID</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_cancel</span><span class="params">(<span class="type">pthread_t</span> thread)</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <ul>
@@ -477,6 +477,181 @@
 </ul>
 </li>
 </ul>
+<h2 id="3-互斥锁"><a href="#3-互斥锁" class="headerlink" title="3.互斥锁"></a>3.互斥锁</h2><blockquote>
+<p>互斥锁是线程同步最常用的一种方式，通过互斥锁可以锁定一个代码块, 被锁定的这个代码块, 所有的线程只能顺序执行(不能并行处理)，这样多线程访问共享资源数据混乱的问题就可以被解决了，需要付出的代价就是执行效率的降低，因为默认临界区多个线程是可以并行处理的，现在只能串行处理。</p>
+</blockquote>
+<p>由定义我们可以得知，将共享资源块看成一个房子，当房子没有被锁的时候，有线程进去，该线程就会将房子锁住，其他的线程无法进入，当该线程出来时，它才会解锁，其他线程才可以进入。</p>
+<h3 id="1-初始化互斥锁"><a href="#1-初始化互斥锁" class="headerlink" title="1. 初始化互斥锁"></a>1. 初始化互斥锁</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>作用</strong>: 初始化一个互斥锁对象 <code>mutex</code>，使其准备好被使用。</p>
+</li>
+<li><p>参数</p>
+<p>:</p>
+<ul>
+<li><code>mutex</code>: 指向互斥锁变量的指针。</li>
+<li><code>attr</code>: 指向互斥锁属性的指针，如果不需要自定义属性，可以传 <code>NULL</code> 表示使用默认属性。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>: 成功返回 <code>0</code>，失败返回错误号。</p>
+</li>
+</ul>
+<h3 id="2-销毁互斥锁"><a href="#2-销毁互斥锁" class="headerlink" title="2. 销毁互斥锁"></a>2. 销毁互斥锁</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int pthread_mutex_destroy(pthread_mutex_t *mutex);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>作用</strong>: 销毁一个互斥锁对象并释放相关的资源。</p>
+</li>
+<li><p>参数</p>
+<p>:</p>
+<ul>
+<li><code>mutex</code>: 指向要销毁的互斥锁变量的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>: 成功返回 <code>0</code>，失败返回错误号。</p>
+</li>
+</ul>
+<h3 id="3-加锁"><a href="#3-加锁" class="headerlink" title="3. 加锁"></a>3. 加锁</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int pthread_mutex_lock(pthread_mutex_t *mutex);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>作用</strong>: 锁定互斥锁。如果互斥锁已经被其他线程锁定，调用线程将阻塞，直到互斥锁可用为止。</p>
+</li>
+<li><p>参数</p>
+<p>:</p>
+<ul>
+<li><code>mutex</code>: 指向要锁定的互斥锁变量的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>: 成功返回 <code>0</code>，失败返回错误号。</p>
+</li>
+</ul>
+<h3 id="4-尝试加锁"><a href="#4-尝试加锁" class="headerlink" title="4. 尝试加锁"></a>4. 尝试加锁</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int pthread_mutex_trylock(pthread_mutex_t *mutex);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>作用</strong>: 尝试锁定互斥锁。如果互斥锁未被锁定，锁定成功并返回 <code>0</code>；如果互斥锁已被锁定，返回错误号但不会阻塞调用线程。</p>
+</li>
+<li><p>参数</p>
+<p>:</p>
+<ul>
+<li><code>mutex</code>: 指向要尝试锁定的互斥锁变量的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>: 成功返回 <code>0</code>，失败返回错误号。</p>
+</li>
+</ul>
+<h3 id="5-解锁"><a href="#5-解锁" class="headerlink" title="5. 解锁"></a>5. 解锁</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int pthread_mutex_unlock(pthread_mutex_t *mutex);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>作用</strong>: 解锁互斥锁，释放对共享资源的访问权。只有锁定互斥锁的线程才能解锁成功。</p>
+</li>
+<li><p>参数</p>
+<p>:</p>
+<ul>
+<li><code>mutex</code>: 指向要解锁的互斥锁变量的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>: 成功返回 <code>0</code>，失败返回错误号。</p>
+</li>
+</ul>
+<h3 id="restrict关键字"><a href="#restrict关键字" class="headerlink" title="restrict关键字"></a>restrict关键字</h3><p><code>restrict</code> 关键字是 C99 标准引入的一种限定符，用来告诉编译器指针是唯一的、独占的，指向的内存区域不会通过别的指针间接访问。这可以让编译器进行更激进的优化，从而提高程序的性能。</p>
+<h4 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h4><p><code>restrict</code> 关键字主要用于指针声明，表示通过这个指针访问的内存区域不会被其他指针修改。它通常用于函数参数，特别是涉及大量数据处理的代码，如图像处理、矩阵运算等。</p>
+<h4 id="语法示例"><a href="#语法示例" class="headerlink" title="语法示例"></a>语法示例</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void func(int *restrict ptr1, int *restrict ptr2) &#123;</span><br><span class="line">    // 在函数中可以假设 ptr1 和 ptr2 指向的内存区域不重叠，</span><br><span class="line">    // 也不会通过其他指针间接访问这些区域</span><br><span class="line">    *ptr1 = *ptr2 + 10;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="restrict-关键字的意义"><a href="#restrict-关键字的意义" class="headerlink" title="restrict 关键字的意义"></a><code>restrict</code> 关键字的意义</h4><ol>
+<li><p>性能优化</p>
+<ul>
+<li>如果编译器知道 <code>ptr1</code> 和 <code>ptr2</code> 指向的内存区域是独立的，它可以优化生成的机器代码。例如，编译器可能会并行化内存操作或将某些操作放在寄存器中而不是内存中。</li>
+</ul>
+</li>
+<li><p>指针别名</p>
+<ul>
+<li>在没有 <code>restrict</code> 关键字的情况下，编译器无法确定两个指针是否指向相同的内存区域（指针别名），因此可能会生成更保守的代码。</li>
+<li>有了 <code>restrict</code> 关键字，编译器可以确信不同的指针指向的内存区域没有重叠，从而可以放心地进行更激进的优化。</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-死锁"><a href="#4-死锁" class="headerlink" title="4.死锁"></a>4.死锁</h2><p>当多个线程访问共享资源, 需要加锁, 如果锁使用不当, 就会造成死锁这种现象。如果线程死锁造成的后果是：所有的线程都被阻塞，并且线程的阻塞是无法解开的（因为可以解锁的线程也被阻塞了）。</p>
+<p>造成死锁的场景有如下几种：</p>
+<ul>
+<li>加锁之后忘记解锁</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// 场景1</span><br><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功, 当前循环完毕没有解锁, 在下一轮循环的时候自己被阻塞了</span><br><span class="line">        // 其余的线程也被阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        // 忘记解锁</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 场景2</span><br><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程被阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        if(xxx)</span><br><span class="line">        &#123;</span><br><span class="line">            // 函数退出, 没有解锁（解锁函数无法被执行了）</span><br><span class="line">            return ;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重复加锁, 造成死锁</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        // 锁被锁住了, A线程阻塞</span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 隐藏的比较深的情况</span><br><span class="line">void funcA()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void funcB()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        funcA();		// 重复加锁</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在程序中有多个共享资源, 因此有很多把锁，随意加锁，导致相互被阻塞</p>
+<p>场景描述:</p>
+<ol>
+<li>有两个共享资源:X, Y，X对应锁A, Y对应锁B<ul>
+<li>线程A访问资源X, 加锁A</li>
+<li>线程B访问资源Y, 加锁B</li>
+</ul>
+</li>
+<li><h2 id="线程A要访问资源Y-线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞-线程A被锁B阻塞了-无法打开A锁-线程B被锁A阻塞了-无法打开B锁"><a href="#线程A要访问资源Y-线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞-线程A被锁B阻塞了-无法打开A锁-线程B被锁A阻塞了-无法打开B锁" class="headerlink" title="线程A要访问资源Y, 线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞- 线程A被锁B阻塞了, 无法打开A锁- 线程B被锁A阻塞了, 无法打开B锁"></a>线程A要访问资源Y, 线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞<br>- 线程A被锁B阻塞了, 无法打开A锁<br>- 线程B被锁A阻塞了, 无法打开B锁</h2></li>
+</ol>
+<p>在使用多线程编程的时候，如何避免死锁呢？</p>
+<ul>
+<li><p>避免多次锁定, 多检查</p>
+</li>
+<li><p>对共享资源访问完毕之后, 一定要解锁，或者在加锁的使用 trylock</p>
+</li>
+<li><p>如果程序中有多把锁, 可以控制对锁的访问顺序(顺序访问共享资源，但在有些情况下是做不到的)，另外也可以在对其他互斥锁做加锁操作之前，先释放当前线程拥有的互斥锁。</p>
+</li>
+<li><p>项目程序中可以引入一些专门用于死锁检测的模块</p>
+</li>
+</ul>
+<h2 id="5-读写锁（Read-Write-Lock）概述"><a href="#5-读写锁（Read-Write-Lock）概述" class="headerlink" title="5.读写锁（Read-Write Lock）概述"></a>5.读写锁（Read-Write Lock）概述</h2><p>读写锁是一种同步机制，它允许多个线程并发读取共享资源，但在写操作时会将其独占。与互斥锁（mutex）相比，读写锁更适合于以下场景：</p>
+<ul>
+<li><strong>读多写少</strong>：当程序中大多数线程都是进行读操作而只有少数进行写操作时，使用读写锁可以显著提高并发性和效率。</li>
+<li><strong>共享读访问</strong>：多个线程可以同时读取共享资源，而不会相互阻塞。</li>
+</ul>
+<h3 id="读写锁的工作原理"><a href="#读写锁的工作原理" class="headerlink" title="读写锁的工作原理"></a>读写锁的工作原理</h3><ul>
+<li><strong>读锁</strong>（<code>pthread_rwlock_rdlock</code>）: 当一个线程获取读锁时，其他线程也可以继续获取读锁。这意味着多个线程可以同时进行读操作，因为读操作不会修改数据，因此并发是安全的。</li>
+<li><strong>写锁</strong>（<code>pthread_rwlock_wrlock</code>）: 当一个线程获取写锁时，其他任何线程都不能获取读锁或写锁。写锁是独占的，保证只有一个线程能够修改数据，从而防止数据竞争和不一致性。</li>
+<li><strong>锁优先级</strong>: 通常，写锁的优先级高于读锁。当有一个线程请求写锁时，任何新的读锁请求都会被阻塞，直到写锁释放。</li>
+</ul>
+<h3 id="读写锁的使用"><a href="#读写锁的使用" class="headerlink" title="读写锁的使用"></a>读写锁的使用</h3><ol>
+<li><p><strong>初始化和销毁锁</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;pthread.h&gt;</span><br><span class="line">pthread_rwlock_t rwlock;</span><br><span class="line"></span><br><span class="line">// 初始化读写锁</span><br><span class="line">int pthread_rwlock_init(pthread_rwlock_t *restrict rwlock,</span><br><span class="line">                        const pthread_rwlockattr_t *restrict attr);</span><br><span class="line"></span><br><span class="line">// 释放读写锁占用的系统资源</span><br><span class="line">int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>rwlock</code>: 读写锁的地址。</li>
+<li><code>attr</code>: 读写锁属性，通常为<code>NULL</code>表示默认属性。</li>
+</ul>
+</li>
+<li><p><strong>加锁与解锁操作</strong>:</p>
+<ul>
+<li><p><strong>加读锁</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int pthread_rwlock_rdlock(pthread_rwlock_t *rwlock);</span><br><span class="line">int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>pthread_rwlock_rdlock</code>: 阻塞调用，直到加锁成功。</li>
+<li><code>pthread_rwlock_tryrdlock</code>: 非阻塞调用，如果无法获取读锁立即返回错误码。</li>
+</ul>
+</li>
+<li><p><strong>加写锁</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock);</span><br><span class="line">int pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>pthread_rwlock_wrlock</code>: 阻塞调用，直到加锁成功。</li>
+<li><code>pthread_rwlock_trywrlock</code>: 非阻塞调用，如果无法获取写锁立即返回错误码。</li>
+</ul>
+</li>
+<li><p><strong>解锁</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+
+<p>该函数用于解锁读锁或写锁。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="读写锁的应用场景"><a href="#读写锁的应用场景" class="headerlink" title="读写锁的应用场景"></a>读写锁的应用场景</h3><ol>
+<li><strong>缓存读取</strong>: 大量读取缓存数据的场景，例如Web服务器缓存静态文件。</li>
+<li><strong>配置文件访问</strong>: 配置文件的读多写少场景。</li>
+<li><strong>数据库的读操作</strong>: 允许多个线程同时读取数据库而不阻塞。</li>
+</ol>
 
         </div>
 
