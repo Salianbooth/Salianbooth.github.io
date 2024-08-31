@@ -614,7 +614,7 @@
 </ul>
 <h3 id="读写锁的使用"><a href="#读写锁的使用" class="headerlink" title="读写锁的使用"></a>读写锁的使用</h3><ol>
 <li><p><strong>初始化和销毁锁</strong>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;pthread.h&gt;</span><br><span class="line">pthread_rwlock_t rwlock;</span><br><span class="line"></span><br><span class="line">// 初始化读写锁</span><br><span class="line">int pthread_rwlock_init(pthread_rwlock_t *restrict rwlock,</span><br><span class="line">                        const pthread_rwlockattr_t *restrict attr);</span><br><span class="line"></span><br><span class="line">// 释放读写锁占用的系统资源</span><br><span class="line">int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="type">pthread_rwlock_t</span> rwlock;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化读写锁</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_rwlock_init</span><span class="params">(<span class="type">pthread_rwlock_t</span> *<span class="keyword">restrict</span> rwlock,</span></span><br><span class="line"><span class="params">                        <span class="type">const</span> <span class="type">pthread_rwlockattr_t</span> *<span class="keyword">restrict</span> attr)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放读写锁占用的系统资源</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_rwlock_destroy</span><span class="params">(<span class="type">pthread_rwlock_t</span> *rwlock)</span>;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>rwlock</code>: 读写锁的地址。</li>
@@ -624,7 +624,7 @@
 <li><p><strong>加锁与解锁操作</strong>:</p>
 <ul>
 <li><p><strong>加读锁</strong>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int pthread_rwlock_rdlock(pthread_rwlock_t *rwlock);</span><br><span class="line">int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_rwlock_rdlock</span><span class="params">(<span class="type">pthread_rwlock_t</span> *rwlock)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_rwlock_tryrdlock</span><span class="params">(<span class="type">pthread_rwlock_t</span> *rwlock)</span>;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>pthread_rwlock_rdlock</code>: 阻塞调用，直到加锁成功。</li>
@@ -632,7 +632,7 @@
 </ul>
 </li>
 <li><p><strong>加写锁</strong>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock);</span><br><span class="line">int pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_rwlock_wrlock</span><span class="params">(<span class="type">pthread_rwlock_t</span> *rwlock)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_rwlock_trywrlock</span><span class="params">(<span class="type">pthread_rwlock_t</span> *rwlock)</span>;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>pthread_rwlock_wrlock</code>: 阻塞调用，直到加锁成功。</li>
@@ -640,7 +640,7 @@
 </ul>
 </li>
 <li><p><strong>解锁</strong>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_rwlock_unlock</span><span class="params">(<span class="type">pthread_rwlock_t</span> *rwlock)</span>;</span><br></pre></td></tr></table></figure>
 
 <p>该函数用于解锁读锁或写锁。</p>
 </li>
@@ -652,6 +652,278 @@
 <li><strong>配置文件访问</strong>: 配置文件的读多写少场景。</li>
 <li><strong>数据库的读操作</strong>: 允许多个线程同时读取数据库而不阻塞。</li>
 </ol>
+<p>条件变量（Condition Variable）是一种用于多线程编程的同步机制。它允许线程在某个条件为真之前进入等待状态，避免频繁轮询条件状态，从而提高程序效率。条件变量通常与互斥锁（Mutex）结合使用，以确保线程在访问共享资源时的安全性。</p>
+<h2 id="6-条件变量"><a href="#6-条件变量" class="headerlink" title="6.条件变量"></a>6.条件变量</h2><h3 id="条件变量的工作原理"><a href="#条件变量的工作原理" class="headerlink" title="条件变量的工作原理"></a>条件变量的工作原理</h3><ol>
+<li><p><strong>等待条件变量</strong>：</p>
+<ul>
+<li>当某个线程需要等待某个条件满足时，它可以调用 <code>pthread_cond_wait</code> 函数进入等待状态。</li>
+<li>在调用 <code>pthread_cond_wait</code> 时，线程首先会释放与条件变量相关联的互斥锁，然后进入阻塞状态等待条件变量的信号。</li>
+<li>当条件变量发出信号时，线程会被唤醒，并重新获得互斥锁，以继续执行后续的操作。</li>
+</ul>
+</li>
+<li><p><strong>发出信号</strong>：</p>
+<ul>
+<li>另一个线程在条件满足时，可以调用 <code>pthread_cond_signal</code> 或 <code>pthread_cond_broadcast</code> 函数发出信号。</li>
+<li><code>pthread_cond_signal</code> 唤醒至少一个等待该条件的线程。</li>
+<li><code>pthread_cond_broadcast</code> 则唤醒所有等待该条件的线程。</li>
+</ul>
+</li>
+</ol>
+<h3 id="条件变量的常见用法"><a href="#条件变量的常见用法" class="headerlink" title="条件变量的常见用法"></a>条件变量的常见用法</h3><p>条件变量通常用于生产者-消费者模型中。假设有一个共享队列，生产者线程向队列中添加数据，消费者线程从队列中取数据：</p>
+<ul>
+<li><p><strong>生产者线程</strong>：在队列满时，生产者线程会等待队列有空位时再继续添加数据。如果队列非满，则将数据加入队列，并通过条件变量通知消费者线程。</p>
+</li>
+<li><p><strong>消费者线程</strong>：在队列为空时，消费者线程会等待有数据加入队列。当有生产者线程加入数据后，消费者线程被条件变量唤醒，取出数据并继续执行。</p>
+</li>
+</ul>
+<h3 id="条件变量的主要操作函数"><a href="#条件变量的主要操作函数" class="headerlink" title="条件变量的主要操作函数"></a>条件变量的主要操作函数</h3><ol>
+<li><p><strong>条件变量初始化</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_cond_init</span><span class="params">(<span class="type">pthread_cond_t</span> *<span class="keyword">restrict</span> cond, <span class="type">const</span> <span class="type">pthread_condattr_t</span> *<span class="keyword">restrict</span> attr)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：初始化一个条件变量 <code>cond</code>，使其可供线程使用。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>cond</code>：条件变量的地址。</li>
+<li><code>attr</code>：条件变量属性，通常使用默认属性，指定为 <code>NULL</code>。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回错误码。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">pthread_cond_t</span> cond;</span><br><span class="line">pthread_cond_init(&amp;cond, <span class="literal">NULL</span>);  <span class="comment">// 初始化条件变量</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>销毁条件变量</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_cond_destroy</span><span class="params">(<span class="type">pthread_cond_t</span> *cond)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：销毁条件变量，释放其占用的资源。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>cond</code>：条件变量的地址。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回错误码。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pthread_cond_destroy(&amp;cond);  <span class="comment">// 销毁条件变量</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>等待条件变量</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_cond_wait</span><span class="params">(<span class="type">pthread_cond_t</span> *<span class="keyword">restrict</span> cond, <span class="type">pthread_mutex_t</span> *<span class="keyword">restrict</span> mutex)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：将调用线程阻塞，直到接收到条件变量的信号。需要与互斥锁结合使用。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>cond</code>：条件变量的地址。</li>
+<li><code>mutex</code>：互斥锁的地址。函数会在阻塞线程之前解锁该互斥锁，在线程被唤醒时重新锁定。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回错误码。</p>
+</li>
+</ul>
+<p>使用场景：</p>
+<ul>
+<li>当一个线程希望等待某个条件时，例如等待队列中有数据可供消费时，它可以调用 <code>pthread_cond_wait</code>。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pthread_mutex_lock(&amp;mutex);</span><br><span class="line"><span class="keyword">while</span> (queue_is_empty()) &#123;</span><br><span class="line">    pthread_cond_wait(&amp;cond, &amp;mutex);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 处理数据</span></span><br><span class="line">pthread_mutex_unlock(&amp;mutex);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>定时等待条件变量</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_cond_timedwait</span><span class="params">(<span class="type">pthread_cond_t</span> *<span class="keyword">restrict</span> cond,</span></span><br><span class="line"><span class="params">                           <span class="type">pthread_mutex_t</span> *<span class="keyword">restrict</span> mutex, </span></span><br><span class="line"><span class="params">                           <span class="type">const</span> <span class="keyword">struct</span> timespec *<span class="keyword">restrict</span> abstime)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：类似 <code>pthread_cond_wait</code>，但如果在指定的时间 <code>abstime</code> 内条件未满足，线程将超时并继续执行。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>cond</code>：条件变量的地址。</li>
+<li><code>mutex</code>：互斥锁的地址。</li>
+<li><code>abstime</code>：表示绝对时间的 <code>timespec</code> 结构体，表示线程等待的超时时间。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，如果超时则返回 <code>ETIMEDOUT</code>。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timespec</span> <span class="title">ts</span>;</span></span><br><span class="line">clock_gettime(CLOCK_REALTIME, &amp;ts);</span><br><span class="line">ts.tv_sec += <span class="number">5</span>;  <span class="comment">// 阻塞5秒</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> res = pthread_cond_timedwait(&amp;cond, &amp;mutex, &amp;ts);</span><br><span class="line"><span class="keyword">if</span> (res == ETIMEDOUT) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Timed out waiting for condition\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>唤醒等待的线程</strong></p>
+<ul>
+<li><p><strong>pthread_cond_signal</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_cond_signal</span><span class="params">(<span class="type">pthread_cond_t</span> *cond)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：唤醒至少一个等待该条件变量的线程。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>cond</code>：条件变量的地址。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回错误码。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pthread_cond_signal(&amp;cond);  <span class="comment">// 唤醒一个线程</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>pthread_cond_broadcast</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">pthread_cond_broadcast</span><span class="params">(<span class="type">pthread_cond_t</span> *cond)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：唤醒所有等待该条件变量的线程。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>cond</code>：条件变量的地址。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回错误码。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pthread_cond_broadcast(&amp;cond);  <span class="comment">// 唤醒所有线程</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<h2 id="7-信号量"><a href="#7-信号量" class="headerlink" title="7.信号量"></a>7.信号量</h2><p>信号量（Semaphore）是一种用于多线程编程的同步机制，可以用来控制对共享资源的访问。信号量是一种计数器，维护着一个计数值，表示可以同时访问某个资源的线程数。信号量有两种类型：<strong>二进制信号量</strong>（binary semaphore）和<strong>计数信号量</strong>（counting semaphore）。</p>
+<h3 id="信号量的类型"><a href="#信号量的类型" class="headerlink" title="信号量的类型"></a>信号量的类型</h3><ol>
+<li><strong>二进制信号量</strong>：<ul>
+<li>也称为互斥量（mutex），只有两个状态：0 和 1。</li>
+<li>类似于互斥锁，可以用来实现线程之间的互斥访问。</li>
+<li>在任意时刻最多只有一个线程可以访问共享资源。</li>
+</ul>
+</li>
+<li><strong>计数信号量</strong>：<ul>
+<li>计数信号量可以有多个资源的访问权限，允许多个线程同时访问共享资源。</li>
+<li>计数器的初始值表示资源的总数，信号量的值减少表示资源被占用，增加表示资源被释放。</li>
+</ul>
+</li>
+</ol>
+<h3 id="信号量的操作函数"><a href="#信号量的操作函数" class="headerlink" title="信号量的操作函数"></a>信号量的操作函数</h3><p>在 POSIX 线程库中，信号量使用 <code>sem_t</code> 类型进行表示，并提供了一组操作函数：</p>
+<ol>
+<li><p><strong>信号量的初始化</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;semaphore.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sem_init</span><span class="params">(<span class="type">sem_t</span> *sem, <span class="type">int</span> pshared, <span class="type">unsigned</span> <span class="type">int</span> value)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：初始化一个信号量。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>sem</code>：指向信号量对象的指针。</li>
+<li><code>pshared</code>：指示信号量的共享类型。为 0 表示线程间共享，为非 0 表示进程间共享。</li>
+<li><code>value</code>：信号量的初始值（资源的数量）。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回 -1 并设置 <code>errno</code>。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">sem_t</span> sem;</span><br><span class="line">sem_init(&amp;sem, <span class="number">0</span>, <span class="number">1</span>);  <span class="comment">// 初始化一个二进制信号量</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>销毁信号量</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">sem_destroy</span><span class="params">(<span class="type">sem_t</span> *sem)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：销毁信号量，释放其占用的资源。</p>
+</li>
+<li><p>参数</p>
+<p>：</p>
+<ul>
+<li><code>sem</code>：指向信号量对象的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回 -1 并设置 <code>errno</code>。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sem_destroy(&amp;sem);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>等待信号量（P 操作）</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">sem_wait</span><span class="params">(<span class="type">sem_t</span> *sem)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：等待信号量，使信号量的值减 1。如果信号量的值为 0，调用线程将被阻塞，直到信号量的值大于 0。</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>sem</code>：指向信号量对象的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回 -1 并设置 <code>errno</code>。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sem_wait(&amp;sem);  <span class="comment">// 请求访问资源，可能会阻塞</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>尝试等待信号量（非阻塞 P 操作）</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">sem_trywait</span><span class="params">(<span class="type">sem_t</span> *sem)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：尝试等待信号量，使信号量的值减 1。如果信号量的值为 0，则函数立即返回，而不是阻塞。</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>sem</code>：指向信号量对象的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回 -1 并设置 <code>errno</code>。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (sem_trywait(&amp;sem) == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 成功获取信号量</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 未成功获取信号量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>释放信号量（V 操作）</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">sem_post</span><span class="params">(<span class="type">sem_t</span> *sem)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>功能</strong>：释放信号量，使信号量的值加 1。如果有线程正在等待信号量，则唤醒一个等待的线程。</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>sem</code>：指向信号量对象的指针。</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong>：成功返回 0，失败返回 -1 并设置 <code>errno</code>。</p>
+</li>
+</ul>
+<p>使用例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sem_post(&amp;sem);  <span class="comment">// 释放资源</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="信号量的典型使用场景"><a href="#信号量的典型使用场景" class="headerlink" title="信号量的典型使用场景"></a>信号量的典型使用场景</h3><p>信号量广泛用于控制对共享资源的访问，尤其是在多线程或多进程的环境中。下面是两个典型的使用场景：</p>
+<ol>
+<li><p><strong>生产者-消费者问题</strong>：</p>
+<p>在生产者-消费者问题中，可以使用两个信号量来协调生产者和消费者之间的操作：</p>
+<ul>
+<li>一个信号量 <code>empty</code> 表示可用的空槽数（初始值为缓冲区的大小）。</li>
+<li>另一个信号量 <code>full</code> 表示已占用的槽数（初始值为 0）。</li>
+<li>生产者在添加项目到缓冲区之前，先执行 <code>sem_wait(&amp;empty)</code>，然后在添加完项目后执行 <code>sem_post(&amp;full)</code>。</li>
+<li>消费者在从缓冲区取项目之前，先执行 <code>sem_wait(&amp;full)</code>，然后在取完项目后执行 <code>sem_post(&amp;empty)</code>。</li>
+</ul>
+<p>这确保了生产者和消费者之间的正确同步。</p>
+</li>
+<li><p><strong>读者-写者问题</strong>：</p>
+<p>信号量也可以用来实现读者-写者问题（Readers-Writers Problem），在这种情况下，需要确保：</p>
+<ul>
+<li>多个读者可以同时读取资源。</li>
+<li>只有一个写者可以写入资源，且写者与读者之间的操作是互斥的。</li>
+</ul>
+<p>信号量和互斥锁的结合使用可以解决这个问题，使得读者可以并发地读取数据，而写者在写入时能够独占访问权限。</p>
+</li>
+</ol>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><p>以下是一个简单的生产者-消费者问题的信号量实现示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;semaphore.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUFFER_SIZE 5</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> buffer[BUFFER_SIZE];</span><br><span class="line"><span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="type">sem_t</span> empty, full;</span><br><span class="line"><span class="type">pthread_mutex_t</span> mutex;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span>* <span class="title function_">producer</span><span class="params">(<span class="type">void</span>* arg)</span> &#123;</span><br><span class="line">    <span class="type">int</span> item;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        item = rand() % <span class="number">100</span>;</span><br><span class="line">        sem_wait(&amp;empty);  <span class="comment">// 等待有空位</span></span><br><span class="line">        pthread_mutex_lock(&amp;mutex);  <span class="comment">// 加锁</span></span><br><span class="line">        buffer[count++] = item;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Produced: %d\n&quot;</span>, item);</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);  <span class="comment">// 解锁</span></span><br><span class="line">        sem_post(&amp;full);  <span class="comment">// 增加已用槽位</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span>* <span class="title function_">consumer</span><span class="params">(<span class="type">void</span>* arg)</span> &#123;</span><br><span class="line">    <span class="type">int</span> item;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        sem_wait(&amp;full);  <span class="comment">// 等待有数据</span></span><br><span class="line">        pthread_mutex_lock(&amp;mutex);  <span class="comment">// 加锁</span></span><br><span class="line">        item = buffer[--count];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Consumed: %d\n&quot;</span>, item);</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);  <span class="comment">// 解锁</span></span><br><span class="line">        sem_post(&amp;empty);  <span class="comment">// 增加空位</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">pthread_t</span> prod, cons;</span><br><span class="line"></span><br><span class="line">    sem_init(&amp;empty, <span class="number">0</span>, BUFFER_SIZE);  <span class="comment">// 初始化空槽信号量</span></span><br><span class="line">    sem_init(&amp;full, <span class="number">0</span>, <span class="number">0</span>);  <span class="comment">// 初始化已用槽信号量</span></span><br><span class="line">    pthread_mutex_init(&amp;mutex, <span class="literal">NULL</span>);  <span class="comment">// 初始化互斥锁</span></span><br><span class="line"></span><br><span class="line">    pthread_create(&amp;prod, <span class="literal">NULL</span>, producer, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_create(&amp;cons, <span class="literal">NULL</span>, consumer, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    pthread_join(prod, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_join(cons, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    sem_destroy(&amp;empty);  <span class="comment">// 销毁信号量</span></span><br><span class="line">    sem_destroy(&amp;full);</span><br><span class="line">    pthread_mutex_destroy(&amp;mutex);  <span class="comment">// 销毁互斥锁</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
         </div>
 
