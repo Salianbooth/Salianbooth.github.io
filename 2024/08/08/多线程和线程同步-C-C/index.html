@@ -574,23 +574,27 @@
 <ul>
 <li>加锁之后忘记解锁</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// 场景1</span><br><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功, 当前循环完毕没有解锁, 在下一轮循环的时候自己被阻塞了</span><br><span class="line">        // 其余的线程也被阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        // 忘记解锁</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 场景2</span><br><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程被阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        if(xxx)</span><br><span class="line">        &#123;</span><br><span class="line">            // 函数退出, 没有解锁（解锁函数无法被执行了）</span><br><span class="line">            return ;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 场景1</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">6</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 当前线程A加锁成功, 当前循环完毕没有解锁, 在下一轮循环的时候自己被阻塞了</span></span><br><span class="line">        <span class="comment">// 其余的线程也被阻塞</span></span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        <span class="comment">// 忘记解锁</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 场景2</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">6</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 当前线程A加锁成功</span></span><br><span class="line">        <span class="comment">// 其余的线程被阻塞</span></span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        <span class="keyword">if</span>(xxx)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 函数退出, 没有解锁（解锁函数无法被执行了）</span></span><br><span class="line">            <span class="keyword">return</span> ;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>重复加锁, 造成死锁</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        // 锁被锁住了, A线程阻塞</span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 隐藏的比较深的情况</span><br><span class="line">void funcA()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void funcB()</span><br><span class="line">&#123;</span><br><span class="line">    for(int i=0; i&lt;6; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前线程A加锁成功</span><br><span class="line">        // 其余的线程阻塞</span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        funcA();		// 重复加锁</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">6</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 当前线程A加锁成功</span></span><br><span class="line">        <span class="comment">// 其余的线程阻塞</span></span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        <span class="comment">// 锁被锁住了, A线程阻塞</span></span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 隐藏的比较深的情况</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">funcA</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">6</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 当前线程A加锁成功</span></span><br><span class="line">        <span class="comment">// 其余的线程阻塞</span></span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">funcB</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">6</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 当前线程A加锁成功</span></span><br><span class="line">        <span class="comment">// 其余的线程阻塞</span></span><br><span class="line">    	pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        funcA();		<span class="comment">// 重复加锁</span></span><br><span class="line">    	....</span><br><span class="line">    	.....</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>在程序中有多个共享资源, 因此有很多把锁，随意加锁，导致相互被阻塞</p>
 <p>场景描述:</p>
-<ol>
+<ul>
 <li>有两个共享资源:X, Y，X对应锁A, Y对应锁B<ul>
 <li>线程A访问资源X, 加锁A</li>
 <li>线程B访问资源Y, 加锁B</li>
 </ul>
 </li>
-<li><h2 id="线程A要访问资源Y-线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞-线程A被锁B阻塞了-无法打开A锁-线程B被锁A阻塞了-无法打开B锁"><a href="#线程A要访问资源Y-线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞-线程A被锁B阻塞了-无法打开A锁-线程B被锁A阻塞了-无法打开B锁" class="headerlink" title="线程A要访问资源Y, 线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞- 线程A被锁B阻塞了, 无法打开A锁- 线程B被锁A阻塞了, 无法打开B锁"></a>线程A要访问资源Y, 线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞<br>- 线程A被锁B阻塞了, 无法打开A锁<br>- 线程B被锁A阻塞了, 无法打开B锁</h2></li>
-</ol>
+<li>线程A要访问资源Y, 线程B要访问资源X，因为资源X和Y已经被对应的锁锁住了，因此这个两个线程被阻塞<ul>
+<li>线程A被锁B阻塞了, 无法打开A锁</li>
+<li>线程B被锁A阻塞了, 无法打开B锁</li>
+</ul>
+</li>
+</ul>
 <p>在使用多线程编程的时候，如何避免死锁呢？</p>
 <ul>
 <li><p>避免多次锁定, 多检查</p>
@@ -684,7 +688,6 @@
 <li><p><strong>功能</strong>：初始化一个条件变量 <code>cond</code>，使其可供线程使用。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>cond</code>：条件变量的地址。</li>
 <li><code>attr</code>：条件变量属性，通常使用默认属性，指定为 <code>NULL</code>。</li>
@@ -703,7 +706,6 @@
 <li><p><strong>功能</strong>：销毁条件变量，释放其占用的资源。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>cond</code>：条件变量的地址。</li>
 </ul>
@@ -721,7 +723,6 @@
 <li><p><strong>功能</strong>：将调用线程阻塞，直到接收到条件变量的信号。需要与互斥锁结合使用。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>cond</code>：条件变量的地址。</li>
 <li><code>mutex</code>：互斥锁的地址。函数会在阻塞线程之前解锁该互斥锁，在线程被唤醒时重新锁定。</li>
@@ -743,7 +744,6 @@
 <li><p><strong>功能</strong>：类似 <code>pthread_cond_wait</code>，但如果在指定的时间 <code>abstime</code> 内条件未满足，线程将超时并继续执行。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>cond</code>：条件变量的地址。</li>
 <li><code>mutex</code>：互斥锁的地址。</li>
@@ -765,7 +765,6 @@
 <li><p><strong>功能</strong>：唤醒至少一个等待该条件变量的线程。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>cond</code>：条件变量的地址。</li>
 </ul>
@@ -783,7 +782,6 @@
 <li><p><strong>功能</strong>：唤醒所有等待该条件变量的线程。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>cond</code>：条件变量的地址。</li>
 </ul>
@@ -819,7 +817,6 @@
 <li><p><strong>功能</strong>：初始化一个信号量。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>sem</code>：指向信号量对象的指针。</li>
 <li><code>pshared</code>：指示信号量的共享类型。为 0 表示线程间共享，为非 0 表示进程间共享。</li>
@@ -839,7 +836,6 @@
 <li><p><strong>功能</strong>：销毁信号量，释放其占用的资源。</p>
 </li>
 <li><p>参数</p>
-<p>：</p>
 <ul>
 <li><code>sem</code>：指向信号量对象的指针。</li>
 </ul>
