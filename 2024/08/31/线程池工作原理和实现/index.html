@@ -165,6 +165,71 @@
                 <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
 
     
     <article class="post-wrap">
@@ -182,12 +247,62 @@
                         </span>
                     
                     
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/self-learning/">self-learning</a>
+                            
+                        </span>
+                    
                 </div>
             
         </header>
 
         <div class="post-content">
-            
+            <p>程池是一种用于优化多线程应用程序性能和资源管理的技术。其基本原理是通过预先创建一定数量的线程并将这些线程复用来执行多个任务，从而避免频繁创建和销毁线程的开销。线程池的使用可以提高应用程序的响应速度和效率，尤其是在需要处理大量短时间任务的场景中。</p>
+<h3 id="线程池的基本组成"><a href="#线程池的基本组成" class="headerlink" title="线程池的基本组成"></a>线程池的基本组成</h3><ol>
+<li><p><strong>线程队列</strong>：线程池维护一个线程队列，其中存储了一组可以复用的工作线程。这些线程在启动时创建，并在整个应用程序生命周期中保持运行状态。</p>
+</li>
+<li><p><strong>任务队列</strong>：任务队列用于存储待执行的任务。当有新的任务提交给线程池时，任务会被添加到任务队列中。</p>
+</li>
+<li><p><strong>工作线程</strong>：工作线程是实际执行任务的线程。在空闲状态时，工作线程会等待任务队列中有新的任务到来。一旦有任务可用，工作线程会取出任务并执行。</p>
+</li>
+<li><p><strong>任务调度器</strong>：任务调度器负责管理任务的提交和分配。它决定何时将任务从任务队列中取出，并将其分配给空闲的工作线程。</p>
+</li>
+</ol>
+<h3 id="线程池的工作原理"><a href="#线程池的工作原理" class="headerlink" title="线程池的工作原理"></a>线程池的工作原理</h3><ol>
+<li><p><strong>初始化</strong>：在线程池初始化阶段，创建一组预定义数量的工作线程，并准备好任务队列。工作线程会进入等待状态，等待任务到来。</p>
+</li>
+<li><p><strong>提交任务</strong>：当有新的任务需要执行时，任务会被提交到线程池。任务可以是一个函数、一个方法调用或其他可执行的代码片段。</p>
+</li>
+<li><p><strong>任务分配</strong>：任务调度器将新提交的任务放入任务队列中。如果有空闲的工作线程，则立即将任务分配给该线程执行。如果没有空闲线程，任务将继续留在队列中，等待线程变得可用。</p>
+</li>
+<li><p><strong>任务执行</strong>：工作线程从任务队列中取出任务并执行。当任务执行完毕后，线程不会终止，而是返回等待状态，准备执行下一个任务。</p>
+</li>
+<li><p><strong>线程回收和复用</strong>：线程池通过保持工作线程的存活来避免频繁创建和销毁线程的开销。当有新任务提交时，线程池复用现有的空闲线程来执行任务。这种复用机制大大提高了任务处理的效率。</p>
+</li>
+<li><p><strong>关闭线程池</strong>：当应用程序结束或需要关闭线程池时，线程池会停止接收新任务，并等待所有已提交任务完成后，再终止所有工作线程。</p>
+</li>
+</ol>
+<h3 id="线程池的优点"><a href="#线程池的优点" class="headerlink" title="线程池的优点"></a>线程池的优点</h3><ol>
+<li><p><strong>性能提升</strong>：通过复用现有线程，减少了创建和销毁线程的开销，提高了应用程序的整体性能。</p>
+</li>
+<li><p><strong>资源管理</strong>：线程池可以限制同时运行的线程数量，从而有效控制系统资源的使用，防止资源过度占用和耗尽。</p>
+</li>
+<li><p><strong>响应速度</strong>：预创建的线程可以快速响应任务请求，降低了任务启动的延迟。</p>
+</li>
+<li><p><strong>简化编程模型</strong>：线程池提供了一个简单的接口用于任务提交和管理，使得开发者可以专注于任务逻辑，而不必关注线程管理的复杂性。</p>
+</li>
+</ol>
+<h3 id="实现线程池的关键技术"><a href="#实现线程池的关键技术" class="headerlink" title="实现线程池的关键技术"></a>实现线程池的关键技术</h3><ol>
+<li><p><strong>互斥锁和条件变量</strong>：为了保证任务队列在多线程环境下的安全性，线程池通常使用互斥锁（<code>mutex</code>）和条件变量（<code>condition variable</code>）来同步线程对任务队列的访问。</p>
+</li>
+<li><p><strong>任务队列</strong>：使用线程安全的数据结构（如队列）来存储待执行的任务。</p>
+</li>
+<li><p><strong>工作线程管理</strong>：动态管理工作线程的数量，根据系统负载情况增加或减少工作线程。</p>
+</li>
+</ol>
+
         </div>
 
         
@@ -224,6 +339,12 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
+                    
+                        <a href="/tags/C/"># C</a>
+                    
+                        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"># 多线程</a>
+                    
+                        
                 </span>
             </div>
             <div>
@@ -233,6 +354,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/09/03/CS106L-Lecture-1/">CS106L:Lecture 1</a>
             
             
             <a class="next" rel="next" href="/2024/08/13/%E5%BB%BA%E7%AB%99%E6%97%A5%E5%BF%97/">建站日志</a>
