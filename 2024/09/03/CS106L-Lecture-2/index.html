@@ -262,7 +262,7 @@
             <h1 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h1><blockquote>
 <p>stream流这一部分在c++Primer这本书里面我都是随便一看就过去了，没想到这门课竟然开始就在讲，那还是简单看一下吧。</p>
 </blockquote>
-<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>我们在编程中会经常想让我们的程序和外部的设备沟通，比方说控制台&amp;键盘，文件等等。</p>
+<h2 id="1-Overview"><a href="#1-Overview" class="headerlink" title="1.Overview"></a>1.Overview</h2><p>我们在编程中会经常想让我们的程序和外部的设备沟通，比方说控制台&amp;键盘，文件等等。</p>
 <p>接下来，我们就以console（控制台为例），我们怎么样才能将一个Data 对象打印在console上呢？<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409040933571.png" alt="Clip_2024-09-04_09-33-48.png"></p>
 <ul>
 <li>开始，我们应该会把这个Data对象转换成一个string<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202409040934451.png" alt="Clip_2024-09-04_09-34-56.png"></li>
@@ -280,9 +280,9 @@
 <p>这样就引出了Stream-&gt;Streams 为我们提供了一个与外部输入交互的统一接口。</p>
 <p>你可以将流想象成一个自动与外部数据源交互的字符缓冲区。</p>
 <p><img src="https://gitee.com/salianbooth/picture/raw/master/202409040945216.png" alt="Clip_2024-09-04_09-45-46.png"></p>
-<h2 id="stringstream"><a href="#stringstream" class="headerlink" title="stringstream"></a>stringstream</h2><p><code>stringstream</code> is a type of stream not connected to any external device. Instead, it operates on a string, allowing you to extract data from or insert data into a string as if it were a stream.</p>
+<h2 id="2-Stringstream"><a href="#2-Stringstream" class="headerlink" title="2.Stringstream"></a>2.Stringstream</h2><p><code>stringstream</code> is a type of stream not connected to any external device. Instead, it operates on a string, allowing you to extract data from or insert data into a string as if it were a stream.</p>
 <p>Examples include using <code>istringstream</code> for input and <code>ostringstream</code> for output.</p>
-<h3 id="stringstream-constructors"><a href="#stringstream-constructors" class="headerlink" title="stringstream constructors"></a>stringstream constructors</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">istringstream</span> <span class="title function_">iss</span><span class="params">(“Initial”)</span>; </span><br><span class="line"><span class="built_in">ostringstream</span> <span class="title function_">oss</span><span class="params">(“Initial”)</span>; </span><br><span class="line"></span><br><span class="line"><span class="built_in">ostringstream</span> <span class="title function_">oss</span><span class="params">(“Initial“, <span class="built_in">stringstream</span>::ate)</span>; </span><br><span class="line"><span class="built_in">istringstream</span> <span class="title function_">iss</span><span class="params">(“Initial“, <span class="built_in">stringstream</span>::bin)</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1stringstream-constructors"><a href="#2-1stringstream-constructors" class="headerlink" title="2.1stringstream constructors"></a>2.1stringstream constructors</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">istringstream</span> <span class="title function_">iss</span><span class="params">(“Initial”)</span>; </span><br><span class="line"><span class="built_in">ostringstream</span> <span class="title function_">oss</span><span class="params">(“Initial”)</span>; </span><br><span class="line"></span><br><span class="line"><span class="built_in">ostringstream</span> <span class="title function_">oss</span><span class="params">(“Initial“, <span class="built_in">stringstream</span>::ate)</span>; </span><br><span class="line"><span class="built_in">istringstream</span> <span class="title function_">iss</span><span class="params">(“Initial“, <span class="built_in">stringstream</span>::bin)</span>;</span><br></pre></td></tr></table></figure>
 
 <p>我们可以看到这2组constructors是有所不同的，为什么后面的加上了stringstream::ate或者stringstream::bin呢？<br>其实是<code>stringstream</code>（以及其他类型的流，如<code>ifstream</code>, <code>ofstream</code>等）内部是使用指针（通常称为流指针）来管理数据的读取和写入位置。<br>而对于我们上面的那一组：</p>
 <ol>
@@ -301,7 +301,7 @@
 </ul>
 </li>
 </ol>
-<h3 id="whitespace-separated-token"><a href="#whitespace-separated-token" class="headerlink" title="whitespace separated token"></a>whitespace separated token</h3><p>A <strong>whitespace-separated token</strong> refers to a segment of text in a string that is separated by one or more whitespace characters, such as spaces, tabs, or newlines. When processing input, streams in C++ typically read data up until they encounter a whitespace, which marks the boundary of a token.<br><strong>以空格分隔的标记</strong>是指字符串中由一个或多个空格字符（如空格、制表符或换行符）分隔的文本段。在处理输入时，C++ 中的流通常会读取数据，直到遇到空格，这标志着标记标记的边界</p>
+<h3 id="2-2whitespace-separated-token"><a href="#2-2whitespace-separated-token" class="headerlink" title="2.2whitespace separated token"></a>2.2whitespace separated token</h3><p>A <strong>whitespace-separated token</strong> refers to a segment of text in a string that is separated by one or more whitespace characters, such as spaces, tabs, or newlines. When processing input, streams in C++ typically read data up until they encounter a whitespace, which marks the boundary of a token.<br><strong>以空格分隔的标记</strong>是指字符串中由一个或多个空格字符（如空格、制表符或换行符）分隔的文本段。在处理输入时，C++ 中的流通常会读取数据，直到遇到空格，这标志着标记标记的边界</p>
 <p>For example, given the string:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;16.9 Ounces \t -38271&quot;</span></span><br></pre></td></tr></table></figure>
 
@@ -321,7 +321,7 @@
 <li><code>&quot;world&quot;</code> is the second token, separated from <code>&quot;42&quot;</code> by another space.</li>
 <li><code>42</code> is the third token.</li>
 </ul>
-<h3 id="Behavior-in-Streams"><a href="#Behavior-in-Streams" class="headerlink" title="Behavior in Streams"></a>Behavior in Streams</h3><ul>
+<h3 id="2-3Behavior-in-Streams"><a href="#2-3Behavior-in-Streams" class="headerlink" title="2.3Behavior in Streams"></a>2.3Behavior in Streams</h3><ul>
 <li><p><strong>Textual Types (<code>std::string</code>, <code>char</code>)</strong>:</p>
 <ul>
 <li>The stream will read a sequence of non-whitespace characters until it encounters a whitespace character, at which point it stops and considers that sequence a token.</li>
@@ -337,22 +337,12 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::istringstream <span class="title">iss</span><span class="params">(<span class="string">&quot;123abc 456&quot;</span>)</span></span>;</span><br><span class="line"><span class="type">int</span> num;</span><br><span class="line">iss &gt;&gt; num;  <span class="comment">// Reads &quot;123&quot;, stops at &quot;a&quot; because it&#x27;s not valid for an int.</span></span><br><span class="line">std::cout &lt;&lt; num;  <span class="comment">// Outputs: 123</span></span><br></pre></td></tr></table></figure>
 
 <p>Here, the stream stops reading as soon as it hits the letter <code>&#39;a&#39;</code>, which is not valid for an integer, resulting in <code>123</code> being the token that is extracted. （int类型，在读到’a’这个字符后就停止了）</p>
-<h3 id="Key-Points"><a href="#Key-Points" class="headerlink" title="Key Points:"></a>Key Points:</h3><ul>
+<h4 id="Key-Points"><a href="#Key-Points" class="headerlink" title="Key Points:"></a>Key Points:</h4><ul>
 <li><strong>Whitespace as a Delimiter</strong>: The stream uses whitespace to determine where one token ends and another begins.</li>
 <li><strong>Tokenization</strong>: The process of splitting the input based on whitespace is often referred to as tokenization.</li>
 <li><strong>Type-Dependent Behavior</strong>: The stream reads input differently depending on the expected type (<code>int</code>, <code>float</code>, <code>std::string</code>), stopping at the first invalid character or whitespace.</li>
 </ul>
-<h3 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ul>
-<li>Q1: What exactly does &gt;&gt; do?<ul>
-<li>A1：The <code>&gt;&gt;</code> operator is known as the <strong>extraction operator</strong> in C++. It is used with input streams (like <code>std::cin</code>, <code>std::ifstream</code>, <code>std::istringstream</code>) to extract data from the stream into variables. （读取数据，直到第一个空格）</li>
-</ul>
-</li>
-<li>Q2:Why can you chain &lt;&lt; and &gt;&gt;?<ul>
-<li>A2:The &gt;&gt; and &lt;&lt; operators return a reference to the stream itself, so in each instance the stream is the left-hand operand.—–因为每次操作后，流对象仍然作为操作符的左侧操作数继续使用，这使得链式操作成为可能。</li>
-</ul>
-</li>
-</ul>
-<h3 id="stringstream-positioning-functions-（了解？）"><a href="#stringstream-positioning-functions-（了解？）" class="headerlink" title="stringstream positioning functions （了解？）"></a>stringstream positioning functions （了解？）</h3><p><code>std::stringstream</code> 类允许你将字符串当作一个流来处理，其中包括读取和写入操作。为了更好地控制流中的数据处理，C++ 提供了一些函数用于管理 <code>stringstream</code> 的内部位置指针。这些函数也同样适用于其他流对象，如 <code>std::ifstream</code> 和 <code>std::ofstream</code>。以下是常用的定位函数：</p>
+<h3 id="2-4stringstream-positioning-functions-（了解？）"><a href="#2-4stringstream-positioning-functions-（了解？）" class="headerlink" title="2.4stringstream positioning functions （了解？）"></a>2.4stringstream positioning functions （了解？）</h3><p><code>std::stringstream</code> 类允许你将字符串当作一个流来处理，其中包括读取和写入操作。为了更好地控制流中的数据处理，C++ 提供了一些函数用于管理 <code>stringstream</code> 的内部位置指针。这些函数也同样适用于其他流对象，如 <code>std::ifstream</code> 和 <code>std::ofstream</code>。以下是常用的定位函数：</p>
 <h4 id="1-tellg"><a href="#1-tellg" class="headerlink" title="1. tellg()"></a>1. <code>tellg()</code></h4><ul>
 <li><strong>作用</strong>：获取当前读取位置的索引。</li>
 <li><strong>返回值</strong>：流中的当前位置，以字节数（position）的形式返回。如果操作失败，则返回 <code>-1</code>。</li>
@@ -373,7 +363,17 @@
 <li><strong>参数</strong>：<code>pos</code> 是目标位置（以字节数表示）。</li>
 <li><strong>用法</strong>：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::stringstream ss;</span><br><span class="line">ss &lt;&lt; <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">ss.<span class="built_in">seekp</span>(<span class="number">2</span>);  <span class="comment">// 设置写入位置到第 2 个字节</span></span><br><span class="line">ss &lt;&lt; <span class="string">&quot;XX&quot;</span>;  <span class="comment">// 原来字符串中的第三个和第四个字符被替换成 &#x27;XX&#x27;</span></span><br></pre></td></tr></table></figure></li>
 </ul>
-<h2 id="state-bits"><a href="#state-bits" class="headerlink" title="state bits"></a>state bits</h2><p>这一部分之前在C++Primer上有了解过，但是也是一笔带过，这里再进行一遍复习。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409041058925.png" alt="Clip_2024-09-04_10-58-21.png"></p>
+<h3 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ul>
+<li>Q1: What exactly does &gt;&gt; do?<ul>
+<li>A1：The <code>&gt;&gt;</code> operator is known as the <strong>extraction operator</strong> in C++. It is used with input streams (like <code>std::cin</code>, <code>std::ifstream</code>, <code>std::istringstream</code>) to extract data from the stream into variables. （读取数据，直到第一个空格）</li>
+</ul>
+</li>
+<li>Q2:Why can you chain &lt;&lt; and &gt;&gt;?<ul>
+<li>A2:The &gt;&gt; and &lt;&lt; operators return a reference to the stream itself, so in each instance the stream is the left-hand operand.—–因为每次操作后，流对象仍然作为操作符的左侧操作数继续使用，这使得链式操作成为可能。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-State-bits"><a href="#3-State-bits" class="headerlink" title="3.State bits"></a>3.State bits</h2><p>这一部分之前在C++Primer上有了解过，但是也是一笔带过，这里再进行一遍复习。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409041058925.png" alt="Clip_2024-09-04_10-58-21.png"></p>
 <p>以下是主要的流状态标志及其含义：</p>
 <ol>
 <li><p><strong>eofbit</strong>（end-of-file bit）</p>
@@ -405,10 +405,79 @@
 <li>表示流状态正常，没有错误。</li>
 <li>可以使用<code>good()</code>成员函数检查。</li>
 </ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (inputFile.<span class="built_in">good</span>()) &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Stream is in good state.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (inputFile.<span class="built_in">good</span>()) &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Stream is in good state.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
 </ol>
 <p><img src="https://gitee.com/salianbooth/picture/raw/master/202409041058252.png" alt="Clip_2024-09-04_10-58-36.png"></p>
 <p><img src="https://gitee.com/salianbooth/picture/raw/master/202409041058579.png" alt="Clip_2024-09-04_10-58-54.png"></p>
+<h2 id="4-Input-Output-Stream"><a href="#4-Input-Output-Stream" class="headerlink" title="4.Input&#x2F;Output Stream"></a>4.Input&#x2F;Output Stream</h2><h3 id="4-1-Flush"><a href="#4-1-Flush" class="headerlink" title="4.1 Flush"></a>4.1 Flush</h3><ol>
+<li><p><strong>缓冲流：字符先存储在一个中间缓冲区中，然后才会被移动到外部目标。</strong></p>
+<ul>
+<li>当你在编写程序时，输出的数据（例如字符或字符串）并不会立刻被发送到终端、文件或其他外部设备。相反，这些数据会先存储在一个临时的内存区域中，这个区域称为<strong>缓冲区</strong>。缓冲区用于暂时存储数据，直到有足够的数据积累后再一起发送，以提高程序的性能。</li>
+</ul>
+</li>
+<li><p><strong>为了将字符推送到外部目标，必须“刷新”流。</strong></p>
+<ul>
+<li>如果你想立即将缓冲区中的数据发送到外部设备或目标（例如，显示在屏幕上或写入文件中），需要<strong>刷新</strong>流。刷新操作会将缓冲区中的所有数据立刻发送出去，而不是等待缓冲区填满或者程序结束时自动刷新。</li>
+</ul>
+</li>
+</ol>
+<p><strong>对于cout来说，有一些特殊情况</strong>：<br><code>cout</code>（标准输出流）通常情况下会使用缓冲区来暂存数据，而不是每次输出操作后都立即刷新到屏幕。这种缓冲机制可以提高输出操作的效率。不过，有几种情况会触发 <code>cout</code> 自动刷新缓冲区：</p>
+<ol>
+<li><p><strong>遇到换行符（<code>\n</code>）时</strong>：</p>
+<ul>
+<li>在大多数实现中，当 <code>cout</code> 输出一个换行符（<code>\n</code>）时，它会自动刷新缓冲区，将所有已输出的数据立即发送到屏幕。这是为了确保换行之前的内容及时显示。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   std::cout &lt;&lt; <span class="string">&quot;Hello, world!\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"> 在这个例子中，`Hello, world!` 后的 `\n` 会触发 `cout` 的自动刷新。</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> **使用 `std::endl` 时**：</span><br><span class="line">   - `std::endl` 是一个特殊的操作符，它不仅会插入一个换行符，还会强制刷新 `cout` 的缓冲区。</span><br><span class="line"></span><br><span class="line">   ```cpp</span><br><span class="line">   std::cout &lt;&lt; <span class="string">&quot;Hello, world!&quot;</span> &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>std::endl</code> 不仅会输出换行，还会立即刷新缓冲区。</p>
+</li>
+<li><p><strong>程序正常结束时</strong>：</p>
+<ul>
+<li>当程序正常结束或 <code>cout</code> 被关闭时，标准库会自动刷新 <code>cout</code> 的缓冲区，将所有未输出的数据发送到屏幕。</li>
+</ul>
+</li>
+<li><p><strong>当 <code>cin</code> 被使用时</strong>：</p>
+<ul>
+<li>如前所述，当 <code>cin</code> 开始读取输入时，标准输出缓冲区也会自动刷新，以确保所有输出的内容在输入提示之前已经显示给用户。</li>
+</ul>
+</li>
+</ol>
+<h3 id="Q-A-1"><a href="#Q-A-1" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ol>
+<li><p><strong>When does the program prompt the user for input?<br> 程序何时提示用户输入？</strong></p>
+<ul>
+<li>The program prompts the user for input whenever an <code>input operation</code> like <code>cin &gt;&gt;</code> is encountered, and it requires data to be read from the standard input. If there is no data in the input buffer or the program needs more data, it will “hang” and wait for the user to provide input.<br>  每当遇到 <code>cin &gt;&gt;</code> 之类的<code>输入操作</code>时，程序都会提示用户输入，并且它要求从标准输入中读取数据。如果 input buffer 中没有数据或程序需要更多数据，它将 “挂起” 并等待用户提供 input。</li>
+</ul>
+</li>
+<li><p><strong>Why does the <code>cout</code> operation not immediately print the output onto the console? When is the output printed?<br> 为什么 <code>cout</code> 操作没有立即将输出打印到控制台上？何时打印输出？</strong></p>
+<ul>
+<li><code>cout</code> is buffered, meaning it stores output data in a buffer and doesn’t necessarily print it immediately to the console. The output is printed when:<br>  <code>cout</code> 是缓冲的，这意味着它将输出数据存储在缓冲区中，并且不必立即将其打印到控制台。在以下情况下打印输出：<ul>
+<li>The buffer is full.</li>
+<li>A newline (<code>\n</code>) is encountered, which often triggers a flush.<br>  遇到换行符 （<code>\n</code>），这通常会触发 flush。</li>
+<li><code>std::endl</code> is used, which inserts a newline and forces a flush.<br>  <code>std：：endl</code> 的 intent 插入换行符并强制刷新。</li>
+<li>The program finishes or exits, which triggers a flush.</li>
+<li><code>std::flush</code> is explicitly called to manually flush the buffer.<br>  显式调用 <code>std：：flush</code> 来手动刷新缓冲区。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Does the position pointer skip whitespace before the token or after the token with each <code>&gt;&gt;</code> operation?<br> 位置指针在每次 <code>&gt;&gt;</code> 操作时是否会跳过令牌之前或之后的空格？</strong></p>
+<ul>
+<li>The position pointer skips whitespace <strong>before</strong> the token with each <code>&gt;&gt;</code> operation. This means that when extracting a value using <code>cin &gt;&gt;</code>, any leading spaces, newlines, or tabs are ignored before reading the actual token.<br>  位置指针在每次 <code>&gt;&gt;</code> 操作中跳过标记<strong>前</strong>的空格。这意味着，使用 <code>cin &gt;&gt;</code> 提取值时，在读取实际标记之前，将忽略任何前导空格、换行符或制表符。</li>
+</ul>
+</li>
+<li><p><strong>Does the position pointer always read up to a whitespace? If not, provide a counterexample.<br> 位置指针是否总是读取到空格？如果没有，请提供一个反例。</strong></p>
+<ul>
+<li><p>The position pointer generally reads up to a whitespace, which is why it stops reading tokens like integers, floats, or strings when it encounters spaces, newlines, or tabs.<br>  位置指针通常读取到空格，这就是为什么当遇到空格、换行符或制表符时，它会停止读取整数、浮点数或字符串等标记。</p>
+</li>
+<li><p><strong>Counterexample</strong>: Consider the input <code>&quot;86.2&quot;</code>. If you extract an <code>int</code> from this input:</p>
+<p>  <code>int number; std::cin &gt;&gt; number;</code></p>
+<p>  The <code>int</code> extraction reads up to the first non-numeric character, stopping at the decimal point, so <code>number</code> would be <code>86</code>. The position pointer will then be positioned at the decimal point, not a whitespace.<br>  <strong>反例</strong>：考虑输入 <code>“86.2”。</code>如果从此输入中提取 <code>int</code>：<code>int</code> 提取最多读取第一个非数字字符，在小数点后停止，因此<code>数字</code>将为 <code>86</code>。然后，位置指针将位于小数点，而不是空格处。</p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>ok，以上基本就是这一节课的基本内容了，虽然不多，但是有很多的细节去发掘，仅仅是整理这些资料就花了我1h的时间，只能说有一点收获吧。</p>
+</blockquote>
 
         </div>
 
