@@ -427,7 +427,13 @@
 <ul>
 <li>在大多数实现中，当 <code>cout</code> 输出一个换行符（<code>\n</code>）时，它会自动刷新缓冲区，将所有已输出的数据立即发送到屏幕。这是为了确保换行之前的内容及时显示。</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   std::cout &lt;&lt; <span class="string">&quot;Hello, world!\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"> 在这个例子中，`Hello, world!` 后的 `\n` 会触发 `cout` 的自动刷新。</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> **使用 `std::endl` 时**：</span><br><span class="line">   - `std::endl` 是一个特殊的操作符，它不仅会插入一个换行符，还会强制刷新 `cout` 的缓冲区。</span><br><span class="line"></span><br><span class="line">   ```cpp</span><br><span class="line">   std::cout &lt;&lt; <span class="string">&quot;Hello, world!&quot;</span> &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; <span class="string">&quot;Hello, world!\n&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>Hello, world!</code> 后的 <code>\n</code> 会触发 <code>cout</code> 的自动刷新。</p>
+</li>
+<li><p><strong>使用 <code>std::endl</code> 时</strong>：</p>
+<ul>
+<li><code>std::endl</code> 是一个特殊的操作符，它不仅会插入一个换行符，还会强制刷新 <code>cout</code> 的缓冲区。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; <span class="string">&quot;Hello, world!&quot;</span> &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure></li>
+</ul>
 <p>在这个例子中，<code>std::endl</code> 不仅会输出换行，还会立即刷新缓冲区。</p>
 </li>
 <li><p><strong>程序正常结束时</strong>：</p>
@@ -528,6 +534,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/09/04/CS106L-Lecture-3/">CS106L:Lecture 3</a>
             
             
             <a class="next" rel="next" href="/2024/09/03/CS106L-Lecture-1/">CS106L:Lecture 1</a>

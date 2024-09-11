@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer" />
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Salianbooth">
+
+
+
+
+
+<title>CS106L:Lecture 3 | Alan Chen&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Salianbooth&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Salianbooth&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">CS106L:Lecture 3</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Salianbooth</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 4, 2024&nbsp;&nbsp;16:44:59</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CS106L/">CS106L</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <ul>
+<li><p><input checked="" disabled="" type="checkbox"> 
+Structured Bindings</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+统一初始化</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+stl默认边界检查不会打开？ 下标索引[  ] 和.at()函数</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+deque</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+container adapter</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+stack和queue 底层是由vector和deque实现的</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+stack&lt;T,vector&gt;</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+map 映射  会sort</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+map.cout()</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+iterator -&gt; 能让我们线性的审视非线性的容器   P59</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+.begin( ) -&gt;return the first iterator</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+for(auto elem : vec)</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+for(auto [ key,vale ]  : map)</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+.lower_bound()</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+set can’t sort() -&gt; 在底层是无序的</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+iterator types —–  input</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+iterator 什么时候失效</p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox"> 
+iterator &amp; pointer</p>
+</li>
+</ul>
+<blockquote>
+<p>这一次主要讲述了STL，这是cpp中很重要的一部分，但是作者前几天去打数模大赛了，熬了2天夜，昨天又休息了一天😭，今天开始写了（9.10）,加油吧！</p>
+</blockquote>
+<h1 id="0-Extended-Discussion"><a href="#0-Extended-Discussion" class="headerlink" title="0.Extended Discussion"></a>0.Extended Discussion</h1><blockquote>
+<p>在开始正式的内容之前，讲述了一些有关C++的新特性</p>
+</blockquote>
+<h2 id="1-Structured-Bindings"><a href="#1-Structured-Bindings" class="headerlink" title="1 Structured Bindings"></a>1 Structured Bindings</h2><p>这是C++17引入的一种语法特性，它允许我们可以将多个返回值绑定到不同的函数上，经常用于pair中，下面是简答的示例:<br>1.用于pair</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;utility&gt;</span>  <span class="comment">// for std::pair</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::pair&lt;<span class="type">int</span>, <span class="type">double</span>&gt; p = &#123;<span class="number">1</span>, <span class="number">4.5</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用 structured binding 直接解构</span></span><br><span class="line">    <span class="keyword">auto</span> [a, b] = p;</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;a: &quot;</span> &lt;&lt; a &lt;&lt; <span class="string">&quot;, b: &quot;</span> &lt;&lt; b &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在这个示例中，我们将p的2个值解构成a，b两个变量，这样就能直接输出p的两个值，不用再用p.x和p.y了。<br>2.用于元组</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;tuple&gt;</span>  <span class="comment">// for std::tuple</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">std::tuple&lt;<span class="type">int</span>, <span class="type">double</span>, <span class="type">char</span>&gt; <span class="title">getTuple</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="number">1</span>, <span class="number">3.14</span>, <span class="string">&#x27;c&#x27;</span>&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 解构 tuple</span></span><br><span class="line">    <span class="keyword">auto</span> [x, y, z] = <span class="built_in">getTuple</span>();</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;x: &quot;</span> &lt;&lt; x &lt;&lt; <span class="string">&quot;, y: &quot;</span> &lt;&lt; y &lt;&lt; <span class="string">&quot;, z: &quot;</span> &lt;&lt; z &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在这个示例中，我们通过将getTuple( )函数的返回值，绑定在x，y，z中，这样就能分别得到3个返回值了。<br>3.用于数组<br>这里就不示范了</p>
+<h2 id="2-Uniform-Initialization（统一初始化）"><a href="#2-Uniform-Initialization（统一初始化）" class="headerlink" title="2.Uniform Initialization（统一初始化）"></a>2.Uniform Initialization（统一初始化）</h2><p>这是C++11引入的新概念，这主要是为所有的类提供统一初始化的方式。主要是通过 <code>&#123; &#125;</code>来实现的。</p>
+<ol>
+<li><p><strong>统一语法</strong>：</p>
+<ul>
+<li>无论是内置类型还是自定义类型，都可以使用相同的初始化语法。</li>
+<li>例如，使用大括号 <code>&#123;&#125;</code> 来初始化数组、结构体、对象、指针等。</li>
+</ul>
+</li>
+<li><p><strong>避免窄化转换（Narrowing Conversion）</strong>：</p>
+<ul>
+<li>统一初始化语法能够防止某些隐式类型转换，特别是会导致数据精度丢失的窄化转换。例如，尝试将一个 <code>double</code> 值初始化为 <code>int</code> 会产生编译错误。</li>
+</ul>
+</li>
+<li><p><strong>基本类型的统一初始化</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a&#123;<span class="number">10</span>&#125;;       <span class="comment">// 初始化为10</span></span><br><span class="line"><span class="type">double</span> b&#123;<span class="number">3.14</span>&#125;;  <span class="comment">// 初始化为3.14</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>数组的统一初始化</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> arr[<span class="number">3</span>]&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;  <span class="comment">// 初始化一个数组</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>类对象的统一初始化</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="type">double</span> y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">MyClass obj&#123;<span class="number">10</span>, <span class="number">3.14</span>&#125;;  <span class="comment">// 使用统一初始化初始化类对象</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>容器的统一初始化</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;  <span class="comment">// 初始化一个vector</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>防止窄化转换</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x&#123;<span class="number">3.14</span>&#125;;  <span class="comment">// 编译错误，防止窄化转换</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="构造函数与统一初始化："><a href="#构造函数与统一初始化：" class="headerlink" title="构造函数与统一初始化："></a>构造函数与统一初始化：</h3><p>在C++11及之后，如果一个类具有构造函数，统一初始化语法会调用相应的构造函数。对于带有初始化列表的构造函数，统一初始化语法也可以和<code>std::initializer_list</code>配合使用。</p>
+<h1 id="1-Overview-of-STL"><a href="#1-Overview-of-STL" class="headerlink" title="1.Overview of STL"></a>1.Overview of STL</h1><p>下图是STL的一些基本内容<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409101941784.png" alt="Clip_2024-09-10_19-41-06.png"></p>
+<h1 id="2-vector-deque"><a href="#2-vector-deque" class="headerlink" title="2.vector&amp;deque"></a>2.vector&amp;deque</h1><h2 id="2-1默认边界"><a href="#2-1默认边界" class="headerlink" title="2.1默认边界"></a>2.1默认边界</h2><p>在C++标准库（STL）中，容器的默认访问方式并不会启用边界检查，具体来说，使用下标运算符 <code>[]</code> 访问容器元素时不会进行边界检查，而使用 <code>.at()</code> 方法时会启用边界检查。</p>
+<h3 id="1-下标索引-："><a href="#1-下标索引-：" class="headerlink" title="1. **下标索引 []**："></a>1. **下标索引 <code>[]</code>**：</h3><ul>
+<li><strong>不进行边界检查</strong>：如果访问超出容器范围的元素，行为是未定义的（Undefined Behavior, UB），通常会导致程序崩溃或不确定的错误。</li>
+<li><strong>适用场景</strong>：如果你确信访问的下标是合法的，并且你追求性能，使用 <code>[]</code> 会更高效，因为它不增加额外的开销。</li>
+</ul>
+   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="type">int</span> value = vec[<span class="number">5</span>];  <span class="comment">// 未定义行为：没有边界检查，超出范围</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-at-函数："><a href="#2-at-函数：" class="headerlink" title="2. .at() 函数："></a>2. <strong><code>.at()</code> 函数</strong>：</h3><ul>
+<li><strong>启用边界检查</strong>：如果尝试访问超出范围的元素，会抛出 <code>std::out_of_range</code> 异常。边界检查虽然稍微增加了运行时开销，但能显著提高安全性。</li>
+<li><strong>适用场景</strong>：适合在你不确定下标是否安全的情况下使用，或者在需要处理异常时。</li>
+</ul>
+   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="type">int</span> value = vec.<span class="built_in">at</span>(<span class="number">5</span>);  <span class="comment">// 抛出std::out_of_range异常</span></span><br><span class="line">&#125; <span class="built_in">catch</span> (<span class="type">const</span> std::out_of_range&amp; e) &#123;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;Index out of bounds: &quot;</span> &lt;&lt; e.<span class="built_in">what</span>() &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="对比总结："><a href="#对比总结：" class="headerlink" title="对比总结："></a>对比总结：</h3><ul>
+<li>**<code>[]</code>**：没有边界检查，性能较高，适合在高性能需求和确保下标合法时使用。</li>
+<li>**<code>.at()</code>**：有边界检查，较为安全，在超出范围时抛出异常，适合安全性更高的场景。</li>
+</ul>
+<p>一般来说，都用<code>[]</code>。</p>
+<h2 id="2-2deque"><a href="#2-2deque" class="headerlink" title="2.2deque"></a>2.2deque</h2><p>这个也是STL的一个序列容器，名称来自“双端队列”（double-ended queue），它支持在序列的两端进行高效的插入和删除操作。这个和vector的不同点就是它支持在两端插入和删除，更加高效一些。<br><code>std::deque</code> 是 C++ 标准库中的一种序列容器，名称来源于“双端队列”（double-ended queue），它支持在序列的两端进行高效的插入和删除操作。</p>
+<h3 id="1-std-deque-的常用操作："><a href="#1-std-deque-的常用操作：" class="headerlink" title="1. std::deque 的常用操作："></a>1. <strong><code>std::deque</code> 的常用操作</strong>：</h3><p>以下是 <code>std::deque</code> 的一些常用操作和函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;deque&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::deque&lt;<span class="type">int</span>&gt; dq = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;  <span class="comment">// 初始化</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入和删除操作</span></span><br><span class="line">    dq.<span class="built_in">push_back</span>(<span class="number">6</span>);     <span class="comment">// 在末尾插入元素</span></span><br><span class="line">    dq.<span class="built_in">push_front</span>(<span class="number">0</span>);    <span class="comment">// 在开头插入元素</span></span><br><span class="line">    dq.<span class="built_in">pop_back</span>();       <span class="comment">// 删除末尾元素</span></span><br><span class="line">    dq.<span class="built_in">pop_front</span>();      <span class="comment">// 删除开头元素</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 访问元素</span></span><br><span class="line">    <span class="type">int</span> front = dq.<span class="built_in">front</span>();   <span class="comment">// 访问第一个元素</span></span><br><span class="line">    <span class="type">int</span> back = dq.<span class="built_in">back</span>();     <span class="comment">// 访问最后一个元素</span></span><br><span class="line">    <span class="type">int</span> second = dq[<span class="number">1</span>];       <span class="comment">// 通过下标访问（无边界检查）</span></span><br><span class="line">    <span class="type">int</span> third = dq.<span class="built_in">at</span>(<span class="number">2</span>);     <span class="comment">// 通过 .at() 方法访问（有边界检查）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 输出所有元素</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> n : dq) &#123;</span><br><span class="line">        std::cout &lt;&lt; n &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-Adapter"><a href="#3-Adapter" class="headerlink" title="3.Adapter"></a>3.Adapter</h1><p>我们经常使用的stack和queue就是适配器。</p>
+<h2 id="3-1什么是适配器？"><a href="#3-1什么是适配器？" class="headerlink" title="3.1什么是适配器？"></a>3.1什么是适配器？</h2><p><strong>适配器</strong>就像是一个“转换器”。它把一种东西转换成另一种形式，方便我们使用。例如，充电插头的转换器就是一个适配器：它把不同形状的插头适配成你能用的插头。<br>适配器最常用于<strong>容器适配器</strong>。它们把已有的容器（比如 <code>std::deque</code>、<code>std::vector</code>）包装起来，变成另一种特定用途的数据结构。这样，你就可以像操作新的数据结构一样使用原来的容器。</p>
+<h3 id="常见的容器适配器"><a href="#常见的容器适配器" class="headerlink" title="常见的容器适配器"></a>常见的容器适配器</h3><ol>
+<li><p><strong><code>std::stack</code>（栈适配器）</strong></p>
+</li>
+<li><h2 id="std-stack-是使用-std-stack-的一个特殊形式，其中底层容器类型被显式指定为-std-vector。这是-std-stack-适配器的一种灵活用法，允许你选择用于存储的容器类型。-栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。-std-stack-其实是包装了-std-deque-或-std-vector，让你只能从顶部放入或取出元素。"><a href="#std-stack-是使用-std-stack-的一个特殊形式，其中底层容器类型被显式指定为-std-vector。这是-std-stack-适配器的一种灵活用法，允许你选择用于存储的容器类型。-栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。-std-stack-其实是包装了-std-deque-或-std-vector，让你只能从顶部放入或取出元素。" class="headerlink" title="std::stack&lt;int, std::vector&lt;int&gt;&gt; 是使用 std::stack 的一个特殊形式，其中底层容器类型被显式指定为 std::vector&lt;int&gt;。这是 std::stack 适配器的一种灵活用法，允许你选择用于存储的容器类型。- 栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。- std::stack 其实是包装了 std::deque 或 std::vector，让你只能从顶部放入或取出元素。"></a><code>std::stack&lt;int, std::vector&lt;int&gt;&gt;</code> 是使用 <code>std::stack</code> 的一个特殊形式，其中底层容器类型被显式指定为 <code>std::vector&lt;int&gt;</code>。这是 <code>std::stack</code> 适配器的一种灵活用法，允许你选择用于存储的容器类型。<br>- <strong>栈</strong>是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。<br>- <code>std::stack</code> 其实是包装了 <code>std::deque</code> 或 <code>std::vector</code>，让你只能从<strong>顶部</strong>放入或取出元素。</h2><ul>
+<li><strong>例子：</strong><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::stack&lt;<span class="type">int</span>, std::vector&lt;<span class="type">int</span>&gt;&gt;</span><br><span class="line">std::stack&lt;<span class="type">int</span>&gt; stack;</span><br><span class="line">stack.<span class="built_in">push</span>(<span class="number">1</span>);   <span class="comment">// 放入元素1</span></span><br><span class="line">stack.<span class="built_in">push</span>(<span class="number">2</span>);   <span class="comment">// 放入元素2</span></span><br><span class="line">stack.<span class="built_in">pop</span>();     <span class="comment">// 移除元素2，只能移除最上面的</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong><code>std::queue</code>（队列适配器）</strong></p>
+<ul>
+<li><strong>队列</strong>是先进先出（FIFO）的数据结构。就像排队买票，最先排的人最先买到票。</li>
+<li><code>std::queue</code> 也包装了 <code>std::deque</code>，但它只允许在<strong>末尾插入</strong>元素，并从<strong>头部删除</strong>元素。</li>
+<li><strong>例子：</strong><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::queue&lt;<span class="type">int</span>&gt; queue;</span><br><span class="line">queue.<span class="built_in">push</span>(<span class="number">1</span>);   <span class="comment">// 在队列尾部插入1</span></span><br><span class="line">queue.<span class="built_in">push</span>(<span class="number">2</span>);   <span class="comment">// 在队列尾部插入2</span></span><br><span class="line">queue.<span class="built_in">pop</span>();     <span class="comment">// 移除队列头部的1</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong><code>std::priority_queue</code>（优先队列适配器）</strong></p>
+<ul>
+<li><strong>优先队列</strong>是特殊的队列，元素根据优先级来出队。比如急诊室的病人，病情更严重的人会优先得到治疗。</li>
+<li><code>std::priority_queue</code> 包装了 <code>std::vector</code>，自动为你将元素按优先级排序。</li>
+<li><strong>例子：</strong><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::priority_queue&lt;<span class="type">int</span>&gt; pq;</span><br><span class="line">pq.<span class="built_in">push</span>(<span class="number">5</span>);   <span class="comment">// 插入5</span></span><br><span class="line">pq.<span class="built_in">push</span>(<span class="number">2</span>);   <span class="comment">// 插入2</span></span><br><span class="line">pq.<span class="built_in">push</span>(<span class="number">8</span>);   <span class="comment">// 插入8，优先级最高</span></span><br><span class="line">pq.<span class="built_in">pop</span>();     <span class="comment">// 移除8，因为它优先级最高</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<h3 id="为什么需要适配器？"><a href="#为什么需要适配器？" class="headerlink" title="为什么需要适配器？"></a>为什么需要适配器？</h3><p><strong>适配器</strong>的好处是它能让你轻松使用现有的容器，但只暴露出特定的功能，符合特定的数据结构需求。</p>
+<p>比如，<code>std::stack</code> 是基于 <code>std::deque</code> 实现的。<code>std::deque</code> 可以在两端插入或删除元素，但 <code>std::stack</code> 只让你在“顶部”进行操作。这就是适配器的作用——限制某些功能，让它看起来更像你想要的数据结构。</p>
+<h3 id="C-Philosophy"><a href="#C-Philosophy" class="headerlink" title="C++Philosophy"></a>C++Philosophy</h3><p>这样我们本来可以用vector的地方，却用了stack，这样是为了什么？和C++哲学有关吗？<br>是的，这和C++的设计哲学密切相关。C++的哲学之一就是<strong>提供灵活性和控制</strong>。使用适配器如 <code>std::stack</code> 而不是直接使用 <code>std::vector</code> 有几个好处：</p>
+<ol>
+<li><p><strong>简化代码</strong>：<code>std::stack</code> 限制了操作，只允许在栈顶插入和删除元素。这种限制让代码更简洁，容易理解和维护，避免了对 <code>std::vector</code> 的不必要操作。</p>
+</li>
+<li><p><strong>明确数据结构的意图</strong>：使用 <code>std::stack</code> 可以明确你的意图是要使用后进先出的数据结构，而不是一个通用的动态数组。这样，其他阅读代码的人可以迅速了解数据的处理方式。</p>
+</li>
+<li><p><strong>避免误用</strong>：<code>std::stack</code> 通过封装 <code>std::vector</code>，限制了对容器的操作。这种限制帮助避免了不适合栈操作的其他操作，比如随机访问和在中间插入或删除元素。</p>
+</li>
+<li><p><strong>符合设计原则</strong>：C++的设计原则之一是<strong>“尽量封装实现，暴露接口”</strong>。<code>std::stack</code> 通过提供栈操作的专用接口，实现了这一原则，让开发者只关注栈相关的操作，而不需要关心底层的实现细节。</p>
+</li>
+</ol>
+<h1 id="4-Associative-Containers"><a href="#4-Associative-Containers" class="headerlink" title="4.Associative Containers"></a>4.Associative Containers</h1><p>关联容器存储的是键值对，元素根据键自动排序或通过哈希映射。以下是主要的关联容器：</p>
+<ul>
+<li><strong>有序关联容器</strong>（元素根据键排序）：<ul>
+<li>**<code>std::set</code>**：存储唯一元素，元素按顺序排列。</li>
+<li>**<code>std::map</code>**：存储键值对，键唯一，按顺序排列。</li>
+<li>**<code>std::multiset</code>**：存储重复元素，按顺序排列。</li>
+<li>**<code>std::multimap</code>**：存储键值对，键可以重复，按顺序排列。</li>
+</ul>
+</li>
+<li><strong>无序关联容器</strong>（元素无序存储，通过哈希映射）：<ul>
+<li>**<code>std::unordered_set</code>**：存储唯一元素，无序存储。</li>
+<li>**<code>std::unordered_map</code>**：存储键值对，键唯一，无序存储。</li>
+<li>**<code>std::unordered_multiset</code>**：存储重复元素，无序存储。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-1map的排序行为"><a href="#4-1map的排序行为" class="headerlink" title="4.1map的排序行为"></a>4.1map的排序行为</h2><p>map是基于红黑树来实现的。因此，map会对<strong>其存储的键进行排序</strong>。这个排序的依据是键值的比较操作，默认情况下是使用 <code>operator&lt;</code>（即 “小于” 运算符）进行排序。</p>
+<h3 id="std-map-的排序行为"><a href="#std-map-的排序行为" class="headerlink" title="std::map 的排序行为"></a><code>std::map</code> 的排序行为</h3><ol>
+<li><p><strong>自动排序</strong>：每当你向 <code>std::map</code> 插入键值对时，容器会根据键值对中的键，使用小于运算符（<code>&lt;</code>）对键进行排序。<code>std::map</code> 始终保持其元素按键的升序排列。因此，遍历 <code>std::map</code> 的时候，你会看到按顺序排列的键。</p>
+</li>
+<li><p><strong>自定义排序</strong>：如果你不想使用默认的 “小于” 运算符来排序键，你也可以在声明 <code>std::map</code> 时提供一个自定义的比较函数或函数对象。例如，可以传入一个自定义的比较函数对象，以改变排序规则。</p>
+</li>
+</ol>
+<h3 id="示例：std-map-自动排序"><a href="#示例：std-map-自动排序" class="headerlink" title="示例：std::map 自动排序"></a>示例：<code>std::map</code> 自动排序</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建一个 std::map，键为 int，值为 std::string</span></span><br><span class="line">    std::map&lt;<span class="type">int</span>, std::string&gt; myMap;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入元素（会根据键自动排序）</span></span><br><span class="line">    myMap[<span class="number">3</span>] = <span class="string">&quot;Three&quot;</span>;</span><br><span class="line">    myMap[<span class="number">1</span>] = <span class="string">&quot;One&quot;</span>;</span><br><span class="line">    myMap[<span class="number">2</span>] = <span class="string">&quot;Two&quot;</span>;</span><br><span class="line">    myMap[<span class="number">5</span>] = <span class="string">&quot;Five&quot;</span>;</span><br><span class="line">    myMap[<span class="number">4</span>] = <span class="string">&quot;Four&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历 std::map，输出排序后的键值对</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; pair : myMap) &#123;</span><br><span class="line">        std::cout &lt;&lt; pair.first &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; pair.second &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1: One</span><br><span class="line">2: Two</span><br><span class="line">3: Three</span><br><span class="line">4: Four</span><br><span class="line">5: Five</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，尽管插入的顺序是随机的，<code>std::map</code> 根据键值自动对其进行了升序排列。</p>
+<h3 id="自定义排序规则"><a href="#自定义排序规则" class="headerlink" title="自定义排序规则"></a>自定义排序规则</h3><p>如果你想让 <code>std::map</code> 按照其他规则（例如降序）进行排序，你可以提供一个自定义的比较函数对象或函数。以下是一个让 <code>std::map</code> 按键值降序排列的示例：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义比较函数对象，实现降序</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">CustomCompare</span> &#123;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">const</span> <span class="type">int</span>&amp; a, <span class="type">const</span> <span class="type">int</span>&amp; b)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a &gt; b;  <span class="comment">// 改为 a &gt; b 即可实现降序</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 使用自定义比较函数的 std::map</span></span><br><span class="line">    std::map&lt;<span class="type">int</span>, std::string, CustomCompare&gt; myMap;</span><br><span class="line"></span><br><span class="line">    myMap[<span class="number">3</span>] = <span class="string">&quot;Three&quot;</span>;</span><br><span class="line">    myMap[<span class="number">1</span>] = <span class="string">&quot;One&quot;</span>;</span><br><span class="line">    myMap[<span class="number">2</span>] = <span class="string">&quot;Two&quot;</span>;</span><br><span class="line">    myMap[<span class="number">5</span>] = <span class="string">&quot;Five&quot;</span>;</span><br><span class="line">    myMap[<span class="number">4</span>] = <span class="string">&quot;Four&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历并输出降序排列的 std::map</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; pair : myMap) &#123;</span><br><span class="line">        std::cout &lt;&lt; pair.first &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; pair.second &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">5: Five</span><br><span class="line">4: Four</span><br><span class="line">3: Three</span><br><span class="line">2: Two</span><br><span class="line">1: One</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong><code>std::map</code> 自动对键进行排序</strong>，默认按升序排列，使用小于运算符（<code>&lt;</code>）。</li>
+<li>如果你想改变排序规则，可以提供一个自定义的比较函数或函数对象。</li>
+</ul>
+<p><code>std::map</code> 的自动排序特性使得它非常适合在需要有序键值对的场景中使用，例如字典、数据库索引等。</p>
+<h2 id="4-2map的查找"><a href="#4-2map的查找" class="headerlink" title="4.2map的查找"></a>4.2map的查找</h2><p>在 C++ 中，<code>std::map</code> 提供了多种方法来查找元素并输出其内容。我们可以使用 <code>find()</code> 函数来查找特定的键，还可以通过遍历 <code>std::map</code> 来输出其中的键值对。</p>
+<h3 id="1-在-std-map-中查找元素"><a href="#1-在-std-map-中查找元素" class="headerlink" title="1. 在 std::map 中查找元素"></a>1. 在 <code>std::map</code> 中查找元素</h3><h4 id="使用-find-函数"><a href="#使用-find-函数" class="headerlink" title="使用 find() 函数"></a>使用 <code>find()</code> 函数</h4><p><code>std::map::find()</code> 是查找元素的标准方法，它接受一个键作为参数，返回一个迭代器，指向对应的键值对。如果找不到键，<code>find()</code> 会返回 <code>map.end()</code> 迭代器。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::map&lt;KeyType, ValueType&gt;::<span class="function">iterator <span class="title">find</span><span class="params">(<span class="type">const</span> KeyType&amp; key)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::map&lt;<span class="type">int</span>, std::string&gt; myMap;</span><br><span class="line">    myMap[<span class="number">1</span>] = <span class="string">&quot;One&quot;</span>;</span><br><span class="line">    myMap[<span class="number">2</span>] = <span class="string">&quot;Two&quot;</span>;</span><br><span class="line">    myMap[<span class="number">3</span>] = <span class="string">&quot;Three&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> keyToFind = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">auto</span> it = myMap.<span class="built_in">find</span>(keyToFind);  <span class="comment">// 查找键为 2 的元素</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (it != myMap.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Found: &quot;</span> &lt;&lt; it-&gt;first &lt;&lt; <span class="string">&quot; =&gt; &quot;</span> &lt;&lt; it-&gt;second &lt;&lt; std::endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Key &quot;</span> &lt;&lt; keyToFind &lt;&lt; <span class="string">&quot; not found&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Found: 2 =&gt; Two</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们查找了键 <code>2</code>，并成功找到了对应的值。如果键不存在，我们可以通过检查迭代器是否等于 <code>map.end()</code> 来判断是否找到了键。</p>
+<h4 id="使用-operator"><a href="#使用-operator" class="headerlink" title="使用 operator[]"></a>使用 <code>operator[]</code></h4><p>你也可以通过 <code>[]</code> 操作符来访问 <code>std::map</code> 中的元素。不过，<strong>要注意</strong>，如果键不存在，<code>operator[]</code> 会自动插入一个新元素并将其值初始化（例如，字符串为空字符串，整数为零）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; myMap[<span class="number">2</span>] &lt;&lt; std::endl;  <span class="comment">// 直接访问键 2 对应的值</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="使用cout（）"><a href="#使用cout（）" class="headerlink" title="使用cout（）"></a>使用cout（）</h4><p>在 C++ 中，<strong>你可以使用 <code>std::map</code> 的 <code>operator[]</code> 来查找和输出值</strong>，并且可以通过检测返回的值是否为默认值来判断该键是否存在。但这种方式和 <code>find()</code> 不同，它会有以下行为：</p>
+<ul>
+<li><strong><code>operator[]</code> 如果键不存在</strong>，它会自动插入该键，并将其对应的值初始化为默认值（例如：<code>int</code> 类型的值会被初始化为 <code>0</code>，<code>std::string</code> 类型会被初始化为空字符串 <code>&quot;&quot;</code>）。</li>
+</ul>
+<p>因此，如果你使用 <code>operator[]</code> 来判断键是否存在，并通过输出值是否为 <code>0</code> 来检查，这是可以的，但是这种方法会 <strong>无意间插入新键</strong>，并可能不符合你的需求。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; myMap;</span><br><span class="line">    myMap[<span class="number">1</span>] = <span class="number">100</span>;</span><br><span class="line">    myMap[<span class="number">2</span>] = <span class="number">200</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用 [] 操作符查找</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Key 1: &quot;</span> &lt;&lt; myMap[<span class="number">1</span>] &lt;&lt; std::endl;  <span class="comment">// 存在，输出 100</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Key 3: &quot;</span> &lt;&lt; myMap[<span class="number">3</span>] &lt;&lt; std::endl;  <span class="comment">// 不存在，插入键 3，输出 0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查键 3 是否被插入</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Size of map: &quot;</span> &lt;&lt; myMap.<span class="built_in">size</span>() &lt;&lt; std::endl;  <span class="comment">// 输出 3，说明键 3 已插入</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="5-iterator"><a href="#5-iterator" class="headerlink" title="5.iterator"></a>5.iterator</h1><p>在学习完关联容器(associative containers)后，是否有这样的疑问，我们如何遍历它们呢？我们要知道，关联容器是没有下标，我们之前所看到的<code>map[1]</code>都是map中键值对中的键访问。<br>这时候，iterator就出现了，在查单词的过程中，我发现了iterate over这个词组指的是遍历的意思，那么迭代器被发明的意义就在于迭代遍历吧。<br>下面是一个简单的示例，其中的<code>std::vector&lt;int&gt;</code>可以换成其他不同的containers。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="keyword">for</span> (std::vector&lt;<span class="type">int</span>&gt;::iterator it = vec.<span class="built_in">begin</span>(); it != vec.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">    std::cout &lt;&lt; *it &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-1-常用函数"><a href="#5-1-常用函数" class="headerlink" title="5.1 常用函数"></a>5.1 常用函数</h2><h3 id="begin"><a href="#begin" class="headerlink" title="begin()"></a><code>begin()</code></h3><ul>
+<li><strong>功能</strong>：<code>begin()</code> 返回指向容器第一个元素的迭代器。如果容器为空，则 <code>begin()</code> 返回与 <code>end()</code> 相同的迭代器。</li>
+<li><strong>返回值</strong>：正向迭代器，指向容器中第一个元素的位置。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="keyword">auto</span> it = vec.<span class="built_in">begin</span>();  <span class="comment">// it 指向 vec 的第一个元素（值为 1）</span></span><br><span class="line">std::cout &lt;&lt; *it &lt;&lt; std::endl;  <span class="comment">// 输出 1</span></span><br></pre></td></tr></table></figure>
+<h3 id="end"><a href="#end" class="headerlink" title="end()"></a><code>end()</code></h3><ul>
+<li><strong>功能</strong>：<code>end()</code> 返回指向容器 <strong>末尾之后</strong> 的迭代器，即指向 <strong>最后一个元素之后</strong> 的一个位置。这个迭代器并不指向一个有效的元素，通常用于标记遍历的终止条件。</li>
+<li><strong>返回值</strong>：正向迭代器，指向容器中最后一个元素的下一个位置。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="keyword">auto</span> it = vec.<span class="built_in">end</span>();  <span class="comment">// it 指向 vec 的末尾之后的位置</span></span><br><span class="line">--it;                 <span class="comment">// 移动到最后一个元素</span></span><br><span class="line">std::cout &lt;&lt; *it &lt;&lt; std::endl;  <span class="comment">// 输出 3</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="5-2-iterator-type"><a href="#5-2-iterator-type" class="headerlink" title="5.2 iterator type"></a>5.2 iterator type</h2><h4 id="2-1-Input-Iterator-输入迭代器"><a href="#2-1-Input-Iterator-输入迭代器" class="headerlink" title="2.1 Input Iterator (输入迭代器)"></a><strong>2.1 Input Iterator (输入迭代器)</strong></h4><ul>
+<li><strong>特性</strong>：只读，只能一次性向前移动（单向遍历）。</li>
+<li><strong>用途</strong>：用于单次读取数据，例如输入流或一次性处理序列。</li>
+<li><strong>示例</strong>：<code>std::istream_iterator</code></li>
+</ul>
+<h4 id="2-2-Output-Iterator-输出迭代器"><a href="#2-2-Output-Iterator-输出迭代器" class="headerlink" title="2.2 Output Iterator (输出迭代器)"></a><strong>2.2 Output Iterator (输出迭代器)</strong></h4><ul>
+<li><strong>特性</strong>：只写，也只能一次性向前移动。</li>
+<li><strong>用途</strong>：用于输出操作，写入数据到某个目的地。</li>
+<li><strong>示例</strong>：<code>std::ostream_iterator</code></li>
+</ul>
+<h4 id="2-3-Forward-Iterator-前向迭代器"><a href="#2-3-Forward-Iterator-前向迭代器" class="headerlink" title="2.3 Forward Iterator (前向迭代器)"></a><strong>2.3 Forward Iterator (前向迭代器)</strong></h4><ul>
+<li><strong>特性</strong>：可以读写，支持多次访问当前元素，但只能向前移动。</li>
+<li><strong>用途</strong>：用于可以重复访问元素的场景。</li>
+<li><strong>示例</strong>：<code>std::forward_list::iterator</code></li>
+</ul>
+<h4 id="2-4-Bidirectional-Iterator-双向迭代器"><a href="#2-4-Bidirectional-Iterator-双向迭代器" class="headerlink" title="2.4 Bidirectional Iterator (双向迭代器)"></a><strong>2.4 Bidirectional Iterator (双向迭代器)</strong></h4><ul>
+<li><strong>特性</strong>：支持前进和后退操作，可以读写。</li>
+<li><strong>用途</strong>：适合需要双向遍历的容器。</li>
+<li><strong>示例</strong>：<code>std::list::iterator</code>, <code>std::set::iterator</code></li>
+</ul>
+<h4 id="2-5-Random-Access-Iterator-随机访问迭代器"><a href="#2-5-Random-Access-Iterator-随机访问迭代器" class="headerlink" title="2.5 Random Access Iterator (随机访问迭代器)"></a><strong>2.5 Random Access Iterator (随机访问迭代器)</strong></h4><ul>
+<li><strong>特性</strong>：支持常数时间内的随机访问（如 <code>it + n</code>），以及前后移动。</li>
+<li><strong>用途</strong>：用于需要快速访问任意位置的场景。</li>
+<li><strong>示例</strong>：<code>std::vector::iterator</code>, <code>std::deque::iterator</code>, 原生指针也是一种随机访问迭代器。</li>
+</ul>
+<h2 id="3-Invalidation-of-Iterators"><a href="#3-Invalidation-of-Iterators" class="headerlink" title="3.Invalidation of Iterators"></a>3.Invalidation of Iterators</h2><p>迭代器失效指的是迭代器指向的容器发生变化后，迭代器不再有效，使用它可能导致未定义行为。不同容器对迭代器失效的情况有所不同：</p>
+<h4 id="3-1-常见的迭代器失效情况"><a href="#3-1-常见的迭代器失效情况" class="headerlink" title="3.1 常见的迭代器失效情况"></a><strong>3.1 常见的迭代器失效情况</strong></h4><ul>
+<li><p><strong>插入元素</strong>：在某些容器中，插入元素后，所有或部分迭代器会失效。</p>
+<ul>
+<li>**<code>std::vector</code>**：如果插入元素导致重新分配内存，则所有迭代器失效；否则只有插入位置之后的迭代器失效。</li>
+<li><strong><code>std::deque</code></strong> 和 **<code>std::string</code>**：类似 <code>std::vector</code>，内存重新分配后，所有迭代器失效。</li>
+<li><strong><code>std::list</code></strong> 和 **<code>std::set</code>**：插入不会使任何迭代器失效。</li>
+</ul>
+</li>
+<li><p><strong>删除元素</strong>：从容器中删除元素后，可能会导致迭代器失效。</p>
+<ul>
+<li>**<code>std::vector</code>**：删除操作会使被删除元素之后的迭代器失效。</li>
+<li>**<code>std::list</code>**：删除单个元素只会使指向该元素的迭代器失效，其他迭代器保持有效。</li>
+<li>**<code>std::map</code> 和 <code>std::set</code>**：同样，只会使指向被删除元素的迭代器失效。</li>
+</ul>
+</li>
+<li><p><strong>内存重新分配</strong>：如 <code>std::vector</code> 扩容或缩容时，重新分配内存会导致所有迭代器失效。</p>
+</li>
+<li><p><strong>容器销毁</strong>：如果容器被销毁，指向它的所有迭代器都会失效。</p>
+</li>
+</ul>
+<h1 id="6-Else"><a href="#6-Else" class="headerlink" title="6.Else"></a>6.Else</h1><h2 id="1-set无法使用sort"><a href="#1-set无法使用sort" class="headerlink" title="1.set无法使用sort()"></a>1.set无法使用sort()</h2><p>其实，**<code>std::set</code>** 在 C++ 中是 <strong>有序的</strong> 容器，而不是无序的。<code>std::set</code> 底层通常实现为一种平衡二叉搜索树（例如红黑树），这意味着 <strong><code>set</code> 会自动根据元素的排序规则（默认是从小到大）存储元素</strong>。因此，<code>std::set</code> 中的元素总是保持排序状态的，不需要也不支持像 <code>vector</code> 那样的手动 <code>sort()</code> 操作。</p>
+<h3 id="关键点："><a href="#关键点：" class="headerlink" title="关键点："></a>关键点：</h3><ul>
+<li><p><strong><code>std::set</code> 自动排序</strong>：<code>std::set</code> 自动根据元素的值进行排序，默认是升序（你可以通过传递自定义比较函数更改排序方式）。</p>
+</li>
+<li><p><strong>无重复元素</strong>：<code>std::set</code> 中不能有重复元素，如果你插入重复的元素，<code>set</code> 会忽略它。</p>
+</li>
+<li><p><strong>底层结构</strong>：<code>std::set</code> 通常使用红黑树等平衡二叉搜索树实现，这保证了插入、删除、查找等操作的时间复杂度为 O(log n)。</p>
+</li>
+</ul>
+<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::set&lt;<span class="type">int</span>&gt; mySet = &#123;<span class="number">5</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">3</span>&#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 元素会自动按从小到大的顺序排序</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; elem : mySet) &#123;</span><br><span class="line">        std::cout &lt;&lt; elem &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 1 2 3 5 8</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，虽然我们按 {5, 2, 8, 1, 3} 的顺序插入元素，但当我们遍历 <code>set</code> 时，元素已经自动按升序排列：1 2 3 5 8。</p>
+<h3 id="为什么-std-set-不能使用-sort-？"><a href="#为什么-std-set-不能使用-sort-？" class="headerlink" title="为什么 std::set 不能使用 sort()？"></a>为什么 <code>std::set</code> 不能使用 <code>sort()</code>？</h3><ul>
+<li>**不需要 <code>sort()</code>**：由于 <code>set</code> 是有序的，每次插入都会保持排序状态，因此没有必要使用 <code>sort()</code>，因为数据结构本身已经在维护排序。</li>
+<li><strong>没有随机访问迭代器</strong>：<code>std::set</code> 不支持随机访问迭代器，而排序算法（如 <code>std::sort</code>）需要随机访问迭代器来高效地对元素进行排序。这也是 <code>std::set</code> 不能直接使用 <code>sort()</code> 的一个原因。</li>
+</ul>
+<h3 id="对比无序容器：std-unordered-set"><a href="#对比无序容器：std-unordered-set" class="headerlink" title="对比无序容器：std::unordered_set"></a>对比无序容器：<code>std::unordered_set</code></h3><p><code>std::unordered_set</code> 是基于哈希表实现的，无序存储元素，插入元素的顺序是无法保证的。与 <code>std::set</code> 相比，它的查找和插入复杂度为 O(1)，但元素之间没有任何顺序关系。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unordered_set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::unordered_set&lt;<span class="type">int</span>&gt; myUnorderedSet = &#123;<span class="number">5</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">3</span>&#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; elem : myUnorderedSet) &#123;</span><br><span class="line">        std::cout &lt;&lt; elem &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出的顺序无法保证，可能是: 5 2 8 1 3</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>unordered_set</code> 没有顺序保证。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li><strong><code>std::set</code> 是有序的</strong>，内部自动排序，底层实现通常是平衡二叉树。</li>
+<li>不能对 <code>set</code> 进行 <code>sort()</code>，因为它本身已经自动排序。</li>
+<li>如果需要无序的集合，可以使用 <code>std::unordered_set</code>，其底层是基于哈希表的实现。</li>
+</ul>
+<h2 id="lower-bound（）"><a href="#lower-bound（）" class="headerlink" title="lower_bound（）"></a>lower_bound（）</h2><p>主要是第一次见了解即可<br>在 C++ 中，<code>std::lower_bound()</code> 是一个非常有用的算法函数，用于在 <strong>有序区间</strong> 中查找不小于给定值的第一个位置（即<strong>第一个大于或等于目标值的位置</strong>）。它是二分查找算法的一个实现，因此它的时间复杂度为 **O(log n)**，适用于有序容器或数组。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::<span class="built_in">lower_bound</span>(start, end, value);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>start</strong>：迭代器，指向区间的起始位置（包含）。</li>
+<li><strong>end</strong>：迭代器，指向区间的末尾位置（不包含）。</li>
+<li><strong>value</strong>：要查找的目标值。</li>
+</ul>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><ul>
+<li>返回一个迭代器，指向 <strong>第一个不小于 <code>value</code> 的元素</strong>。</li>
+<li>如果没有找到不小于 <code>value</code> 的元素，返回 <code>end</code>（即最后一个元素之后的位置）。</li>
+</ul>
+<h3 id="使用条件"><a href="#使用条件" class="headerlink" title="使用条件"></a>使用条件</h3><ul>
+<li>区间 <code>[start, end)</code> 必须是 <strong>已排序的</strong>。如果区间未排序，结果未定义。</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>以下是一些 <code>std::lower_bound()</code> 的用法示例：</p>
+<h4 id="例子-1：在有序数组中查找"><a href="#例子-1：在有序数组中查找" class="headerlink" title="例子 1：在有序数组中查找"></a>例子 1：在有序数组中查找</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span>  <span class="comment">// 包含 std::lower_bound</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> value = <span class="number">6</span>;</span><br><span class="line">    <span class="keyword">auto</span> it = std::<span class="built_in">lower_bound</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (it != vec.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;First element not less than &quot;</span> &lt;&lt; value &lt;&lt; <span class="string">&quot; is &quot;</span> &lt;&lt; *it &lt;&lt; std::endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;All elements are less than &quot;</span> &lt;&lt; value &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">First element not less than 6 is 7</span><br></pre></td></tr></table></figure>
+
+<h4 id="例子-2：查找存在的值"><a href="#例子-2：查找存在的值" class="headerlink" title="例子 2：查找存在的值"></a>例子 2：查找存在的值</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> value = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">auto</span> it = std::<span class="built_in">lower_bound</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (it != vec.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;First element not less than &quot;</span> &lt;&lt; value &lt;&lt; <span class="string">&quot; is &quot;</span> &lt;&lt; *it &lt;&lt; std::endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;All elements are less than &quot;</span> &lt;&lt; value &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">First element not less than 5 is 5</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>5</code> 正好在数组中，因此 <code>lower_bound()</code> 返回指向 <code>5</code> 的迭代器。</p>
+<h4 id="例子-3：使用自定义比较函数"><a href="#例子-3：使用自定义比较函数" class="headerlink" title="例子 3：使用自定义比较函数"></a>例子 3：使用自定义比较函数</h4><p>对于复杂的数据结构，可以使用自定义的比较函数作为第四个参数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">    std::string name;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 比较函数：根据 age 进行比较</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> Person &amp;p1, <span class="type">const</span> Person &amp;p2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> p<span class="number">1.</span>age &lt; p<span class="number">2.</span>age;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;Person&gt; people = &#123;&#123;<span class="number">30</span>, <span class="string">&quot;Alice&quot;</span>&#125;, &#123;<span class="number">40</span>, <span class="string">&quot;Bob&quot;</span>&#125;, &#123;<span class="number">50</span>, <span class="string">&quot;Charlie&quot;</span>&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    Person target = &#123;<span class="number">45</span>, <span class="string">&quot;&quot;</span>&#125;;  <span class="comment">// 我们查找第一个年龄不小于 45 的人</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> it = std::<span class="built_in">lower_bound</span>(people.<span class="built_in">begin</span>(), people.<span class="built_in">end</span>(), target, compare);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (it != people.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;First person not younger than 45 is &quot;</span> &lt;&lt; it-&gt;name &lt;&lt; std::endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Everyone is younger than 45.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">First person not younger than 45 is Charlie</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="其他遍历方式"><a href="#其他遍历方式" class="headerlink" title="其他遍历方式"></a>其他遍历方式</h2><p>在 C++ 中，范围 <code>for</code> 循环（<code>range-based for loop</code>）提供了一种简洁的方式来遍历容器，如 <code>std::vector</code> 和 <code>std::map</code>。你提到的两种形式分别是遍历 <code>std::vector</code> 和 <code>std::map</code> 的方法。让我们来详细说明：</p>
+<h3 id="1-遍历-std-vector"><a href="#1-遍历-std-vector" class="headerlink" title="1. 遍历 std::vector"></a>1. <strong>遍历 <code>std::vector</code></strong></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> elem : vec) &#123;</span><br><span class="line">    std::cout &lt;&lt; elem &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>解释</strong>：该循环会遍历 <code>vec</code> 中的每个元素，并通过 <code>elem</code> 变量访问元素。</li>
+<li><strong>注意</strong>：<code>auto elem</code> 默认是值传递，如果要通过引用访问元素，可以使用 <code>auto&amp; elem</code>。</li>
+</ul>
+<h3 id="2-遍历-std-map"><a href="#2-遍历-std-map" class="headerlink" title="2. 遍历 std::map"></a>2. <strong>遍历 <code>std::map</code></strong></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::map&lt;<span class="type">int</span>, std::string&gt; myMap = &#123;&#123;<span class="number">1</span>, <span class="string">&quot;apple&quot;</span>&#125;, &#123;<span class="number">2</span>, <span class="string">&quot;banana&quot;</span>&#125;, &#123;<span class="number">3</span>, <span class="string">&quot;cherry&quot;</span>&#125;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> [key, value] : myMap) &#123;</span><br><span class="line">    std::cout &lt;&lt; key &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; value &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>解释</strong>：<code>std::map</code> 的元素是 <code>std::pair</code>，包含键和值。使用结构化绑定语法 <code>auto [key, value]</code>，可以直接解构每个 <code>pair</code>，从而分别访问 <code>key</code> 和 <code>value</code>。</li>
+<li><strong>注意</strong>：同样，<code>auto [key, value]</code> 默认是值传递。如果需要通过引用访问，可以使用 <code>auto&amp; [key, value]</code>，以避免不必要的拷贝。</li>
+</ul>
+<h3 id="完整示例："><a href="#完整示例：" class="headerlink" title="完整示例："></a>完整示例：</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line">    std::map&lt;<span class="type">int</span>, std::string&gt; myMap = &#123;&#123;<span class="number">1</span>, <span class="string">&quot;apple&quot;</span>&#125;, &#123;<span class="number">2</span>, <span class="string">&quot;banana&quot;</span>&#125;, &#123;<span class="number">3</span>, <span class="string">&quot;cherry&quot;</span>&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历 vector</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> elem : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; elem &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历 map</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> [key, value] : myMap) &#123;</span><br><span class="line">        std::cout &lt;&lt; key &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; value &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结：-1"><a href="#总结：-1" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li>对于 <code>std::vector</code>，可以直接使用 <code>for (auto elem : vec)</code> 进行遍历。</li>
+<li>对于 <code>std::map</code>，使用结构化绑定 <code>for (auto [key, value] : map)</code> 来遍历键值对。</li>
+</ul>
+<p>通过引用访问元素可以提升性能，尤其是在处理大型数据结构时。</p>
+<blockquote>
+<p>ok,这基本是第3节课的所有内容了，基本没多少，很多都是基础内容，笔者这里也是用chatgpt直接生成了一些内容，下一次就要看模板了，刚把累！</p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Salianbooth</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://salianbooth.github.io/2024/09/04/CS106L-Lecture-3/">https://salianbooth.github.io/2024/09/04/CS106L-Lecture-3/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Cpp/"># Cpp</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2024/09/03/CS106L-Lecture-2/">CS106L:Lecture 2</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Salianbooth | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
