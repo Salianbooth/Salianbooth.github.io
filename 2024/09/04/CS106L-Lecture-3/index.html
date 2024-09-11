@@ -259,63 +259,7 @@
         </header>
 
         <div class="post-content">
-            <ul>
-<li><p><input checked="" disabled="" type="checkbox"> 
-Structured Bindings</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-统一初始化</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-stl默认边界检查不会打开？ 下标索引[  ] 和.at()函数</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-deque</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-container adapter</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-stack和queue 底层是由vector和deque实现的</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-stack&lt;T,vector&gt;</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-map 映射  会sort</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-map.cout()</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-iterator -&gt; 能让我们线性的审视非线性的容器   P59</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-.begin( ) -&gt;return the first iterator</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-for(auto elem : vec)</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-for(auto [ key,vale ]  : map)</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-.lower_bound()</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-set can’t sort() -&gt; 在底层是无序的</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-iterator types —–  input</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-iterator 什么时候失效</p>
-</li>
-<li><p><input checked="" disabled="" type="checkbox"> 
-iterator &amp; pointer</p>
-</li>
-</ul>
-<blockquote>
+            <blockquote>
 <p>这一次主要讲述了STL，这是cpp中很重要的一部分，但是作者前几天去打数模大赛了，熬了2天夜，昨天又休息了一天😭，今天开始写了（9.10）,加油吧！</p>
 </blockquote>
 <h1 id="0-Extended-Discussion"><a href="#0-Extended-Discussion" class="headerlink" title="0.Extended Discussion"></a>0.Extended Discussion</h1><blockquote>
@@ -380,9 +324,7 @@ iterator &amp; pointer</p>
 <h1 id="3-Adapter"><a href="#3-Adapter" class="headerlink" title="3.Adapter"></a>3.Adapter</h1><p>我们经常使用的stack和queue就是适配器。</p>
 <h2 id="3-1什么是适配器？"><a href="#3-1什么是适配器？" class="headerlink" title="3.1什么是适配器？"></a>3.1什么是适配器？</h2><p><strong>适配器</strong>就像是一个“转换器”。它把一种东西转换成另一种形式，方便我们使用。例如，充电插头的转换器就是一个适配器：它把不同形状的插头适配成你能用的插头。<br>适配器最常用于<strong>容器适配器</strong>。它们把已有的容器（比如 <code>std::deque</code>、<code>std::vector</code>）包装起来，变成另一种特定用途的数据结构。这样，你就可以像操作新的数据结构一样使用原来的容器。</p>
 <h3 id="常见的容器适配器"><a href="#常见的容器适配器" class="headerlink" title="常见的容器适配器"></a>常见的容器适配器</h3><ol>
-<li><p><strong><code>std::stack</code>（栈适配器）</strong></p>
-</li>
-<li><h2 id="std-stack-是使用-std-stack-的一个特殊形式，其中底层容器类型被显式指定为-std-vector。这是-std-stack-适配器的一种灵活用法，允许你选择用于存储的容器类型。-栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。-std-stack-其实是包装了-std-deque-或-std-vector，让你只能从顶部放入或取出元素。"><a href="#std-stack-是使用-std-stack-的一个特殊形式，其中底层容器类型被显式指定为-std-vector。这是-std-stack-适配器的一种灵活用法，允许你选择用于存储的容器类型。-栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。-std-stack-其实是包装了-std-deque-或-std-vector，让你只能从顶部放入或取出元素。" class="headerlink" title="std::stack&lt;int, std::vector&lt;int&gt;&gt; 是使用 std::stack 的一个特殊形式，其中底层容器类型被显式指定为 std::vector&lt;int&gt;。这是 std::stack 适配器的一种灵活用法，允许你选择用于存储的容器类型。- 栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。- std::stack 其实是包装了 std::deque 或 std::vector，让你只能从顶部放入或取出元素。"></a><code>std::stack&lt;int, std::vector&lt;int&gt;&gt;</code> 是使用 <code>std::stack</code> 的一个特殊形式，其中底层容器类型被显式指定为 <code>std::vector&lt;int&gt;</code>。这是 <code>std::stack</code> 适配器的一种灵活用法，允许你选择用于存储的容器类型。<br>- <strong>栈</strong>是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。<br>- <code>std::stack</code> 其实是包装了 <code>std::deque</code> 或 <code>std::vector</code>，让你只能从<strong>顶部</strong>放入或取出元素。</h2><ul>
+<li><h2 id="std-stack（栈适配器）-栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。-std-stack-其实是包装了-std-deque-或-std-vector，让你只能从顶部放入或取出元素。"><a href="#std-stack（栈适配器）-栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。-std-stack-其实是包装了-std-deque-或-std-vector，让你只能从顶部放入或取出元素。" class="headerlink" title="std::stack（栈适配器）- 栈是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。- std::stack 其实是包装了 std::deque 或 std::vector，让你只能从顶部放入或取出元素。"></a><strong><code>std::stack</code>（栈适配器）</strong><br>- <strong>栈</strong>是后进先出（LIFO）的数据结构。想象一摞盘子，新的盘子总是放在最上面，拿的时候也只能从最上面拿。<br>- <code>std::stack</code> 其实是包装了 <code>std::deque</code> 或 <code>std::vector</code>，让你只能从<strong>顶部</strong>放入或取出元素。</h2><ul>
 <li><strong>例子：</strong><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::stack&lt;<span class="type">int</span>, std::vector&lt;<span class="type">int</span>&gt;&gt;</span><br><span class="line">std::stack&lt;<span class="type">int</span>&gt; stack;</span><br><span class="line">stack.<span class="built_in">push</span>(<span class="number">1</span>);   <span class="comment">// 放入元素1</span></span><br><span class="line">stack.<span class="built_in">push</span>(<span class="number">2</span>);   <span class="comment">// 放入元素2</span></span><br><span class="line">stack.<span class="built_in">pop</span>();     <span class="comment">// 移除元素2，只能移除最上面的</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
@@ -401,6 +343,7 @@ iterator &amp; pointer</p>
 </ul>
 </li>
 </ol>
+<p>PS: <code>std::stack&lt;int, std::vector&lt;int&gt;&gt;</code>是使用 <code>std::stack</code> 的一个特殊形式，其中底层容器类型被显式指定为 <code>std::vector&lt;int&gt;</code>。这是 <code>std::stack</code> 适配器的一种灵活用法，允许你选择用于存储的容器类型。</p>
 <h3 id="为什么需要适配器？"><a href="#为什么需要适配器？" class="headerlink" title="为什么需要适配器？"></a>为什么需要适配器？</h3><p><strong>适配器</strong>的好处是它能让你轻松使用现有的容器，但只暴露出特定的功能，符合特定的数据结构需求。</p>
 <p>比如，<code>std::stack</code> 是基于 <code>std::deque</code> 实现的。<code>std::deque</code> 可以在两端插入或删除元素，但 <code>std::stack</code> 只让你在“顶部”进行操作。这就是适配器的作用——限制某些功能，让它看起来更像你想要的数据结构。</p>
 <h3 id="C-Philosophy"><a href="#C-Philosophy" class="headerlink" title="C++Philosophy"></a>C++Philosophy</h3><p>这样我们本来可以用vector的地方，却用了stack，这样是为了什么？和C++哲学有关吗？<br>是的，这和C++的设计哲学密切相关。C++的哲学之一就是<strong>提供灵活性和控制</strong>。使用适配器如 <code>std::stack</code> 而不是直接使用 <code>std::vector</code> 有几个好处：</p>
