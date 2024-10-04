@@ -308,7 +308,46 @@
 </ul>
 </li>
 </ol>
-<h1 id="DBMS"><a href="#DBMS" class="headerlink" title="DBMS"></a>DBMS</h1>
+<h1 id="DBMS"><a href="#DBMS" class="headerlink" title="DBMS"></a>DBMS</h1><p>基于以上存在的各种问题，我们需要有一个通用的数据库解决方案，也就是数据库管理系统 DBMS。那么什么是数据库管理系统呢？</p>
+<p>database management system（数据库管理系统） 简称DBMS，s software that allows applications to store and analyze information in a database.<br>DBMS是介于软件和数据库之间的，能够使应用能存储和分析数据库里的信息。</p>
+<p>A general-purpose DBMS supports the definition, creation, querying, update, and administration of databases in accordance with some data model.（DBMS应该支持的功能）</p>
+<h2 id="Data-models"><a href="#Data-models" class="headerlink" title="Data models"></a>Data models</h2><p>A data model is a collection of concepts for describing the data in a database.<br><strong>数据模型</strong>是描述数据库中数据的概念的集合。从本质上讲，它定义了数据在数据库系统中的<strong>存储、管理和操作</strong>方式。</p>
+<p>A schema is a description of a particular collection of data, using a given data model.<br><strong>模式</strong>是使用给定数据模型对特定数据集合的描述。</p>
+<ul>
+<li>Relational——关系模型，大部分的 DBMS 都采用了关系模型，本课程重点内容。</li>
+<li>Key&#x2F;Value——NoSQL （由于sql是使用的关系模型，所以其他的模型都称为NoSQL–”Not Only SQL”）</li>
+<li>Graph——NoSQL</li>
+<li>Document——NoSQL</li>
+<li>Column-family——NoSQL</li>
+<li>Array &#x2F; Matrix——数组和矩阵模型，通常会在机器学习中使用</li>
+<li>Hierarchical——层次数据模型（很古老的模型）</li>
+<li>Network——网络数据模型（很古老的模型）</li>
+</ul>
+<p>数据模型的组成要素：数据结构，数据操作，数据的完整性约束。</p>
+<h2 id="Early-DBMSs"><a href="#Early-DBMSs" class="headerlink" title="Early  DBMSs"></a>Early  DBMSs</h2><p>Early database applications were difficult to build and maintain on available DBMSs in the 1960s.<br>基于当时可用的数据库管理系统（DBMS）开发和维护数据库应用程序是十分困难的。</p>
+<p>→ Examples: IDS, IMS, CODASYL<br>→ Computers were expensive, humans were cheap. 当时计算机昂贵，而人力成本较低。</p>
+<p>Tight coupling between logical and physical layers.<br>逻辑层和物理层之间的紧密耦合导致开发复杂。  </p>
+<p>Programmers had to (roughly) know what queries the application would execute before they could deploy the database.<br>程序员在部署数据库之前，必须大致了解应用程序会执行哪些查询。</p>
+<p>Ted Codd发现了这个问题，为了避免人们重复地进行编码和重构，Codd saw IBM’s developers rewriting database programs every time the database’s schema or layout changed.<br>Devised the relational model in 1969.<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410031112542.png" alt="Clip_2024-10-03_11-12-07.png"></p>
+<h2 id="RELATIONAL-MODEL"><a href="#RELATIONAL-MODEL" class="headerlink" title="RELATIONAL MODEL"></a>RELATIONAL MODEL</h2><p>The relational model defines a database abstraction based on relations to avoid maintenance overhead.<br>关系模型定义了一种基于关系的数据库抽象，以避免维护的额外负担。</p>
+<p>它有一下的3个关键的<strong>原则</strong> ：<br>→ 以简单的数据结构（关系）存储数据库。<br>→ 物理存储由数据库管理系统（DBMS）实现决定。<br>→ 通过高级语言访问数据，DBMS会自动确定最佳执行策略。</p>
+<p><strong>三要素</strong></p>
+<ul>
+<li><strong>Structure（关系结构）</strong>: The definition of relations and their contents. 关系及其内容的定义。</li>
+<li><strong>Integrity（数据完整性约束）</strong>: Ensure the database’s contents satisfy constraints. 保证数据库内容满足约束条件。</li>
+<li><strong>Manipulation（操纵）</strong>: How to access and modify a database’s contents. 如何访问和修改数据库的内容。</li>
+</ul>
+<h3 id="相关术语"><a href="#相关术语" class="headerlink" title="相关术语"></a>相关术语</h3><ul>
+<li><p><strong>relation 关系</strong> is unordered set that contain the relationship of attributes that represent entities. 对应一张表格。</p>
+</li>
+<li><p><strong>tuple 元组</strong>is a set of attribute values (also known as its domain) in the relation.对应表格中的一行。<br>  → Values are (normally) atomic&#x2F;scalar.<br>  → The special value NULL is a member of every domain (if allowed).<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202410031128940.png" alt="Clip_2024-10-03_11-28-26.png"></p>
+</li>
+<li><p><strong>primary key 主键</strong>是唯一一个标记一个元组的属性（例如身份证）。如果没用定义主键，一些DBMS会自动船舰一个内部的主键。<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202410031131281.png" alt="Clip_2024-10-03_11-30-59.png"></p>
+</li>
+<li><p><strong>foreign key 外键</strong> 是指将一个元组中的属性映射到另外一个元组的属性上，可以用来维护不同关系之间的数据一致性。<br>  比如说，我有三张表分别是，学生信息表，课程信息表，还有学生选课信息表，其中学生选课信息表中的学号和课程号就分别来自其他的2个表，这样就称学号和课程号是SC表的外键。<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202410031136967.png" alt="Clip_2024-10-03_11-36-32.png"></p>
+</li>
+</ul>
+<h2 id="DML"><a href="#DML" class="headerlink" title="DML"></a>DML</h2>
         </div>
 
         
