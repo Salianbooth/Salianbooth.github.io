@@ -347,7 +347,86 @@
 <li><p><strong>foreign key 外键</strong> 是指将一个元组中的属性映射到另外一个元组的属性上，可以用来维护不同关系之间的数据一致性。<br>  比如说，我有三张表分别是，学生信息表，课程信息表，还有学生选课信息表，其中学生选课信息表中的学号和课程号就分别来自其他的2个表，这样就称学号和课程号是SC表的外键。<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202410031136967.png" alt="Clip_2024-10-03_11-36-32.png"></p>
 </li>
 </ul>
-<h2 id="DML"><a href="#DML" class="headerlink" title="DML"></a>DML</h2>
+<h1 id="DML"><a href="#DML" class="headerlink" title="DML"></a>DML</h1><p><strong>Data Manipulation Languages (DML)<strong>，即</strong>数据操作语言</strong>，是用于在数据库中查询、插入、更新和删除数据的一类语言。在关系数据库管理系统中，DML是一部分SQL（结构化查询语言），专注于数据的操作和管理。</p>
+<p>以下是DML的主要功能：</p>
+<ol>
+<li><p>**查询数据 (SELECT)**：用于从数据库中检索数据。</p>
+<ul>
+<li>示例：<code>SELECT * FROM Employees;</code><ul>
+<li>该语句从表 <code>Employees</code> 中检索所有的记录。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>**插入数据 (INSERT)**：用于向数据库的表中插入新数据。</p>
+<ul>
+<li>示例：<code>INSERT INTO Employees (Name, Age) VALUES (&#39;John&#39;, 30);</code><ul>
+<li>该语句向 <code>Employees</code> 表中插入一条新记录，名字为John，年龄为30。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>**更新数据 (UPDATE)**：用于修改已存在的数据。</p>
+<ul>
+<li>示例：<code>UPDATE Employees SET Age = 31 WHERE Name = &#39;John&#39;;</code><ul>
+<li>该语句将 <code>Employees</code> 表中名字为John的员工的年龄更新为31。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>**删除数据 (DELETE)**：用于删除数据库中的数据。</p>
+<ul>
+<li>示例：<code>DELETE FROM Employees WHERE Age = 31;</code><ul>
+<li>该语句删除所有年龄为31的员工记录。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="Relational-Algebra"><a href="#Relational-Algebra" class="headerlink" title="Relational Algebra"></a>Relational Algebra</h2><p>Fundamental operations to retrieve and manipulate tuples in a relation. 检索和操作关系中的元组的基本操作。</p>
+<ul>
+<li><p>Based on set algebra. 基于集合的代数。<br>Each operator takes one or more relations as its inputs and outputs a new relation. 每个操作符以一个或多个关系作为其输入，并输出一个新的关系。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410051541991.png" alt="Clip_2024-10-05_15-40-58.png"></p>
+</li>
+<li><p><strong>选择 (Select, σ)</strong>: 通过选择谓词筛选元组（行），相当于过滤操作。</p>
+<ul>
+<li>语法: σpredicate(R)</li>
+<li>示例: σa_id&#x3D;’a2’(R) 返回所有 <code>a_id=&#39;a2&#39;</code> 的行。</li>
+</ul>
+</li>
+<li><p><strong>投影 (Projection, π)</strong>: 只返回指定的属性（列）。</p>
+<ul>
+<li>语法: ΠA1,A2,…,An(R)</li>
+<li>示例: Πb_id-100,a_id(σa_id&#x3D;’a2’(R)) 移除无关列并操作列的值。</li>
+</ul>
+</li>
+<li><p><strong>并集 (Union, ∪)</strong>: 返回两个输入关系中的所有元组。</p>
+<ul>
+<li>语法: (R ∪ S)</li>
+</ul>
+</li>
+<li><p><strong>交集 (Intersection, ∩)</strong>: 仅返回出现在两个关系中的元组。</p>
+<ul>
+<li>语法: (R ∩ S)</li>
+</ul>
+</li>
+<li><p><strong>差集 (Difference, −)</strong>: 返回在第一个关系中但不在第二个关系中的元组。</p>
+<ul>
+<li>语法: (R − S)</li>
+</ul>
+</li>
+<li><p><strong>笛卡尔积 (Product, ×)</strong>: 生成两个关系中所有元组的组合。</p>
+<ul>
+<li>语法: (R × S)</li>
+</ul>
+</li>
+<li><p><strong>连接 (Join, ⋈)</strong>: 通过共同属性值将两个关系中的元组合并。</p>
+<ul>
+<li>语法: (R ⋈ S)</li>
+</ul>
+</li>
+</ul>
+<p>这些内容都很简单，无需过多的理解，想要深入了解，可以去b站看<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1W3411y7dw/?spm_id_from=333.999.0.0&vd_source=b2413ecf60f1e8b5a48adcc77ce32005">《数据库系统概论》</a>这门课的讲解。</p>
+
         </div>
 
         
