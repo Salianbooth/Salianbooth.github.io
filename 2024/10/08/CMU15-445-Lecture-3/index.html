@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer" />
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Salianbooth">
+
+
+
+
+
+<title>CMU15-445:Lecture 3 | Alan Chen&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Salianbooth&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Salianbooth&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">CMU15-445:Lecture 3</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Salianbooth</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 8, 2024&nbsp;&nbsp;15:29:44</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CMU15-445/">CMU15-445</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>这一次课程主要讲解了Database Storage，数据库从存储层，数据库是如何存储在disk硬盘上的，还有pages layout页面布局这些内容，还是挺多的，半个月前看完了课程，但是一直没有整理笔记，今天又重新快速过了一遍，希望写笔记能写的更好。（写本笔记的时候，在听夜鹿的 [月光] live）</p>
+</blockquote>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202410081700018.png" alt="Clip_2024-10-08_17-00-06.png"><br>我们将自底层向上学习，先从DISK Manager开始学起。</p>
+<h1 id="Disk-based-architecture"><a href="#Disk-based-architecture" class="headerlink" title="Disk-based architecture"></a>Disk-based architecture</h1><p>The DBMS assumes that the primary storage location of the database is on non-volatile disk.<br>数据库管理系统（DBMS）假设数据库的主要存储位置是在非易失性磁盘上。<br>The DBMS’s components manage the movement of data between non-volatile and volatile storage.<br>DBMS 的各个组件负责管理数据在非易失性存储和易失性存储之间的移动。</p>
+<h2 id="Storage-hierarchy"><a href="#Storage-hierarchy" class="headerlink" title="Storage hierarchy"></a><strong>Storage hierarchy</strong></h2><p>这一部分在计算机组成原理学过，这里就不多做赘述，其中要注意的一点是本课程讲述了Volatile易失性和Non-Volatile非易失性这一个特性。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410081701499.png" alt="Clip_2024-10-08_17-01-29.png"></p>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202410081701571.png" alt="Clip_2024-10-08_17-01-43.png"></p>
+<h2 id="Access-time"><a href="#Access-time" class="headerlink" title="Access time"></a><strong>Access time</strong></h2><p>是指从请求数据到完成访问所需的时间。在计算机系统中，访问不同存储层次的数据的时间差异非常大，影响了整体系统性能。下面是常见的存储层次的访问时间：<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410081704942.png" alt="Clip_2024-10-08_17-04-00.png"></p>
+<h2 id="Sequential-Access-VS-Random-Access"><a href="#Sequential-Access-VS-Random-Access" class="headerlink" title="Sequential Access VS Random Access"></a><strong>Sequential Access</strong> VS <strong>Random Access</strong></h2><ul>
+<li><p><strong>随机访问（Random Access）</strong>：在非易失性存储（例如硬盘）上进行随机访问通常比顺序访问要慢得多。这是因为硬盘的机械性质决定了读取不同位置的数据需要移动磁头，会产生额外的寻道时间和延迟。</p>
+</li>
+<li><p><strong>顺序访问（Sequential Access）</strong>：指的是数据按连续的物理位置依次进行访问，这样的访问模式更高效，因为不需要频繁移动磁头。</p>
+</li>
+</ul>
+<p>DBMS 会尽量优化数据的存储和访问，以最大化顺序访问的使用，原因是这样能提升整体性能：</p>
+<ol>
+<li><strong>减少对随机页面的写入次数</strong>：<ul>
+<li>DBMS 通过算法尽量减少对随机页面（散乱分布的页面）的写入，以保证数据被存储在连续的块中。</li>
+</ul>
+</li>
+<li><strong>同时分配多个页面（Extent）</strong>：<ul>
+<li>当需要分配多个页面时，DBMS 会一次性分配相邻的多个页面，这种方式被称为一个<strong>扩展区（Extent）</strong>。这样可以尽量保证数据的物理连续性，从而提高顺序访问的可能性。</li>
+</ul>
+</li>
+</ol>
+<h1 id="System-Design-Goals"><a href="#System-Design-Goals" class="headerlink" title="System Design Goals"></a><strong>System Design Goals</strong></h1><p>在课程中提出了DBMS的设计目标：</p>
+<ul>
+<li><p>Allow the DBMS to manage databases that exceed the amount of memory available. </p>
+</li>
+<li><p>允许数据库管理系统（DBMS）处理超出内存容量的数据库。</p>
+</li>
+<li><p>Reading&#x2F;writing to disk is expensive, so it must be managed carefully to avoid large stalls and performance degradation.</p>
+</li>
+<li><p>磁盘读写开销较大，因此需要精细管理。</p>
+</li>
+<li><p>Random access on disk is usually much slower than sequential access, so the DBMS will want to maximize sequential access.</p>
+</li>
+<li><p>需要最大化的利用顺序存储。</p>
+</li>
+</ul>
+<h1 id="Disk-Oriented-DBMS"><a href="#Disk-Oriented-DBMS" class="headerlink" title="Disk-Oriented DBMS"></a><strong>Disk-Oriented DBMS</strong></h1><p>磁盘导向的DBMS中更新数据的基本流程：<br>在disk硬盘上的database file中存储了我们的pages，其中通过directory page来找到想要的几号pages；将想要的update 的pages加载到buffer pool缓冲池中，额案后execution engine get page#2，然后更新数据，最后将page#2存储回到database file中。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410081715114.png" alt="Clip_2024-10-08_17-15-36.png"></p>
+<ol>
+<li>**磁盘管理 (Disk Management)**：<ul>
+<li><strong>主要职责</strong>：负责将数据库存储为磁盘上的一个或多个文件。这些文件可能是以专有格式存储的，操作系统通常不了解其内部结构。</li>
+<li><strong>工作方式</strong>：磁盘管理器负责在磁盘上组织数据，以页 (pages) 的形式存储。每个页面都有唯一的标识符，数据和元数据都存储在这些页中。</li>
+</ul>
+</li>
+<li><h2 id="缓冲池管理-Buffer-Pool-Management-：-主要职责：将从磁盘读取的页面暂时存储在内存中（缓冲池）以提高性能。数据库系统不能在每次需要数据时都直接访问磁盘，因为这会导致较大的性能开销。-工作方式：缓冲池管理器从磁盘中获取页面，将其缓存到内存中以便快速访问。它需要决定哪些页面应该留在缓冲池中，哪些页面可以被替换掉。"><a href="#缓冲池管理-Buffer-Pool-Management-：-主要职责：将从磁盘读取的页面暂时存储在内存中（缓冲池）以提高性能。数据库系统不能在每次需要数据时都直接访问磁盘，因为这会导致较大的性能开销。-工作方式：缓冲池管理器从磁盘中获取页面，将其缓存到内存中以便快速访问。它需要决定哪些页面应该留在缓冲池中，哪些页面可以被替换掉。" class="headerlink" title="**缓冲池管理 (Buffer Pool Management)**：- 主要职责：将从磁盘读取的页面暂时存储在内存中（缓冲池）以提高性能。数据库系统不能在每次需要数据时都直接访问磁盘，因为这会导致较大的性能开销。- 工作方式：缓冲池管理器从磁盘中获取页面，将其缓存到内存中以便快速访问。它需要决定哪些页面应该留在缓冲池中，哪些页面可以被替换掉。"></a>**缓冲池管理 (Buffer Pool Management)**：<br>- <strong>主要职责</strong>：将从磁盘读取的页面暂时存储在内存中（缓冲池）以提高性能。数据库系统不能在每次需要数据时都直接访问磁盘，因为这会导致较大的性能开销。<br>- <strong>工作方式</strong>：缓冲池管理器从磁盘中获取页面，将其缓存到内存中以便快速访问。它需要决定哪些页面应该留在缓冲池中，哪些页面可以被替换掉。</h2></li>
+</ol>
+<ul>
+<li><strong>磁盘管理</strong>决定了数据如何在磁盘上存储和组织，而<strong>缓冲池管理</strong>则负责将这些存储在磁盘上的数据页加载到内存中，并优化页面的读写操作以减少对磁盘的频繁访问。</li>
+<li><strong>缓冲池管理依赖于磁盘管理</strong>：缓冲池中的页面需要由磁盘管理器提供，当页面不再缓存在内存中时，缓冲池管理器会通过磁盘管理器从磁盘上获取数据。</li>
+<li><strong>二者目标一致</strong>：共同减少昂贵的磁盘I&#x2F;O操作。缓冲池管理通过将页面保留在内存中来减少磁盘访问，而磁盘管理通过优化文件存储和读取顺序来减少随机访问的性能开销。</li>
+</ul>
+<h2 id="Why-not-use-OS"><a href="#Why-not-use-OS" class="headerlink" title="Why not use OS"></a>Why not use OS</h2><p>The DBMS can use memory mapping (mmap) to store the contents of a file into the address space of a program.<br>DBMS 可以使用内存映射（mmap）将文件的内容存储到程序的地址空间中。</p>
+<p>OS is responsible for moving file pages in and out of memory, so the DBMS doesn’t need to worry about it.<br>操作系统负责将文件页面在内存和磁盘之间进行调度，因此 DBMS 不需要对此进行关心。</p>
+<p>我们可以通过下面的流程了解os对文件进行调度：</p>
+<ol>
+<li><strong>mmap 映射</strong>：当程序使用 <code>mmap</code> 进行文件映射时，操作系统会将文件的某些部分（通常以页为单位）映射到程序的<strong>虚拟地址空间</strong>中。但此时，并没有实际将文件的数据加载到<strong>物理内存</strong>中。</li>
+<li><strong>程序访问虚拟内存页面</strong>：当程序访问映射到虚拟地址空间中的某个页面（例如 <code>page1</code>），操作系统会检查该页面是否已经在<strong>物理内存</strong>中。<ul>
+<li>如果页面已经在物理内存中，程序就可以直接访问该页面的内容。</li>
+<li>如果页面不在物理内存中（通常这是第一次访问时的情况），就会触发<strong>缺页中断</strong>。</li>
+</ul>
+</li>
+<li><strong>缺页中断和页面加载</strong>：缺页中断（Page Fault）发生时，操作系统会负责从磁盘上的文件中读取该页面的数据，并将其加载到<strong>物理内存</strong>中。加载完成后，虚拟内存中的这个页面就会和物理内存中的实际页面关联起来。此后，程序访问该页面时，数据就直接从物理内存中读取。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410081728597.png" alt="Clip_2024-10-08_17-26-49.png"><br>但是当物理内存满了后会怎么样呢？mmap遇到页面错误，这将阻止进程，如果进程锁定了其他元组就麻烦了。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410081730683.png" alt="Clip_2024-10-08_17-30-06.png"></li>
+</ol>
+<h3 id="Memory-Mapped-I-O-Problems"><a href="#Memory-Mapped-I-O-Problems" class="headerlink" title="Memory Mapped I&#x2F;O Problems"></a>Memory Mapped I&#x2F;O Problems</h3><p><strong>Problem #1: Transaction Safety</strong><br>→ OS can flush dirty pages at any time.</p>
+<ul>
+<li>操作系统可以随时刷新脏页。</li>
+</ul>
+<p><strong>Problem #2: I&#x2F;O Stalls</strong><br>→ DBMS doesn’t know which pages are in memory. The OS will stall a thread on page fault. </p>
+<ul>
+<li>数据库管理系统（DBMS）不知道哪些页面在内存中。发生页面错误时，操作系统会导致线程停顿。</li>
+</ul>
+<p><strong>Problem #3: Error Handling</strong><br>→ Difficult to validate pages. Any access can cause a SIGBUS that the DBMS must handle. </p>
+<ul>
+<li>难以验证页面的有效性。任何访问都可能导致 <code>SIGBUS</code> 错误，DBMS 必须处理这些错误。</li>
+</ul>
+<p><strong>Problem #4: Performance Issues</strong><br>→ OS data structure contention. TLB shootdowns</p>
+<ul>
+<li>操作系统的数据结构争用。TLB（翻译后备缓冲区）失效。</li>
+</ul>
+<h1 id="磁盘管理模块的核心问题"><a href="#磁盘管理模块的核心问题" class="headerlink" title="磁盘管理模块的核心问题"></a>磁盘管理模块的核心问题</h1><p>DBMS 的磁盘管理模块主要解决两个问题：</p>
+<ol>
+<li>（本节）如何使用磁盘文件来表示数据库的数据（元数据、索引、数据表等）</li>
+<li>如何管理数据在内存与磁盘之间的移动.</li>
+</ol>
+<h1 id="File-Storage"><a href="#File-Storage" class="headerlink" title="File Storage"></a>File Storage</h1><p>The DBMS stores a database as one or more files on disk typically in a proprietary format.<br>DBMS以一种专门的方式将DB存储在disk上。<br>-&gt; The OS doesn’t know anything about the contents of these files.</p>
+<h3 id="Storage-Manager"><a href="#Storage-Manager" class="headerlink" title="Storage Manager"></a><strong>Storage Manager</strong></h3><p>The storage manager is responsible for maintaining a database’s files.<br>→ Some do their own scheduling for reads and writes to improve spatial and temporal locality of <strong><em>pages</em>.</strong></p>
+<p>It organizes the files as a collection of <em><strong>pages.</strong></em><br>→ Tracks data read&#x2F;written to pages.    —跟踪读取&#x2F;写入页面的数据。<br>→ Tracks the available space.                —跟踪可用空间。</p>
+<h3 id="Page"><a href="#Page" class="headerlink" title="Page"></a><strong>Page</strong></h3><p>DBMS中通常把文件切分成大小固定的一块数据-&gt;page页。每个page页面能存储元组，meta-data元数据，indexes，log等等，大多数的system不会mix page types（每种数据都有专门的page存储）。每个 page 带着一个唯一的 id，DBMS 使用一个 indirection layer 将 page id 与数据实际存储的物理位置关联起来。</p>
+<p>A page is a fixed-size block of data.<br>→ It can contain tuples, meta-data, indexes, log records…<br>→ Most systems do not mix page types.<br>→ Some systems require a page to be self-contained.</p>
+<p>Each page is given a unique identifier. → The DBMS uses an indirection layer to map page IDs to physical locations.</p>
+<p>关于pages，有三个概念需要区分：</p>
+<ul>
+<li>Hardware Page：通常大小为 4KB</li>
+<li>OS Page: 通常大小为 4KB</li>
+<li>Database Page：(1-16KB)</li>
+</ul>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202410081749759.png" alt="Clip_2024-10-08_17-49-55.png"></p>
+<p>不同 DBMS 管理 pages 的方式不同，主要分为以下几种：</p>
+<ul>
+<li>Heap File Organization</li>
+<li>Sequential&#x2F;Sorted File Organization</li>
+<li>Hashing File Organization<br>其中最常用的就是Heap了，下面我们着重讲解heap的管理。</li>
+</ul>
+<h3 id="Heap-File"><a href="#Heap-File" class="headerlink" title="Heap File"></a><strong>Heap</strong> <strong>File</strong></h3><p>A heap file is an unordered collection of pages with tuples that are stored in random order.<br><strong>堆文件（Heap File）</strong> 是一个无序的页面集合，其中存储了以随机顺序排列的元组（tuples）。</p>
+<ul>
+<li>创建 &#x2F; 获取 &#x2F; 写入 &#x2F; 删除页面</li>
+<li>还必须支持遍历所有页面的操作。<br>pages 管理模块需要记录哪些 pages 已经被使用，而哪些 pages 尚未被使用。那么具体如何来记录和管理呢？这里我们主要讲到了Page Directory。</li>
+</ul>
+<p>The DBMS maintains special pages that tracks the location of data pages in the database files.<br>数据库管理系统（DBMS）维护特殊的页面，用于跟踪数据库文件中数据页面的位置。<br>→ Must make sure that the directory pages are in sync with the data pages.<br>→ 必须确保目录页面与数据页面保持同步。</p>
+<p>The directory also records meta-data  about available space:<br>目录还记录关于可用空间的元数据：<br>→ The number of free slots per page.  → 每个页面的空闲槽数量。<br>→ List of free &#x2F; empty pages.                → 空闲&#x2F;空页面的列表。</p>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202410081755899.png" alt="Clip_2024-10-08_17-55-43.png"></p>
+<h1 id="Page-Layout"><a href="#Page-Layout" class="headerlink" title="Page Layout"></a>Page Layout</h1>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Salianbooth</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://salianbooth.github.io/2024/10/08/CMU15-445-Lecture-3/">https://salianbooth.github.io/2024/10/08/CMU15-445-Lecture-3/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Cpp/"># Cpp</a>
+                    
+                        <a href="/tags/DB/"># DB</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2024/10/05/CMU15-445-Lecture-2/">CMU15-445:Lecture 2</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Salianbooth | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
