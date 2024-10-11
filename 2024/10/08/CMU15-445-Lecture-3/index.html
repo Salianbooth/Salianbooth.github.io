@@ -299,9 +299,9 @@
 <li><p>需要最大化的利用顺序存储。</p>
 </li>
 </ul>
-<h1 id="Disk-Oriented-DBMS"><a href="#Disk-Oriented-DBMS" class="headerlink" title="Disk-Oriented DBMS"></a><strong>Disk-Oriented DBMS</strong></h1><p>磁盘导向的DBMS中更新数据的基本流程：<br>在disk硬盘上的database file中存储了我们的pages，其中通过directory page来找到想要的几号pages；将想要的update 的pages加载到buffer pool缓冲池中，额案后execution engine get page#2，然后更新数据，最后将page#2存储回到database file中。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410081715114.png" alt="Clip_2024-10-08_17-15-36.png"></p>
+<h1 id="Disk-Oriented-DBMS"><a href="#Disk-Oriented-DBMS" class="headerlink" title="Disk-Oriented DBMS"></a><strong>Disk-Oriented DBMS</strong></h1><p>磁盘导向的DBMS中更新数据的基本流程：<br>在disk硬盘上的database file中存储了我们的pages，其中通过directory page来找到想要的几号pages；将想要的update 的pages加载到buffer pool缓冲池中，燃后execution engine get page#2，然后更新数据，最后将page#2存储回到database file中。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410081715114.png" alt="Clip_2024-10-08_17-15-36.png"></p>
 <ol>
-<li>**磁盘管理 (Disk Management)**：<ul>
+<li>磁盘管理 (Disk Management)：<ul>
 <li><strong>主要职责</strong>：负责将数据库存储为磁盘上的一个或多个文件。这些文件可能是以专有格式存储的，操作系统通常不了解其内部结构。</li>
 <li><strong>工作方式</strong>：磁盘管理器负责在磁盘上组织数据，以页 (pages) 的形式存储。每个页面都有唯一的标识符，数据和元数据都存储在这些页中。</li>
 </ul>
@@ -542,6 +542,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/10/11/DB-Terminology-Hub-A-Guide-to-15-445/">DB Terminology Hub: A Guide to 15-445</a>
             
             
             <a class="next" rel="next" href="/2024/10/05/CMU15-445-Lecture-2/">CMU15-445:Lecture 2</a>
