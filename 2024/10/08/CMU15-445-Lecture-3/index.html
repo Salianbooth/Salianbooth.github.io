@@ -490,6 +490,87 @@
 </ul>
 </li>
 </ol>
+<blockquote>
+<p>下面的部分是存储层的第三次课的内容，其中主要讲述了<strong>存储模型和压缩</strong>，以下是具体的内容。</p>
+</blockquote>
+<h1 id="DataBase-Workloads"><a href="#DataBase-Workloads" class="headerlink" title="DataBase Workloads"></a>DataBase Workloads</h1><p>数据库在工作的时候也是有擅长和不擅长的部分的，所以人们对数据库处理不同任务的需求和特性，分成了以下的3种：</p>
+<ol>
+<li><strong>在线事务处理（OLTP）</strong>：擅长处理简单的，少量多次的写操作，比如，在JD上将商品加入购物车。</li>
+<li><strong>在线分析处理（OLAP）</strong>：擅长处理复杂的，大量的查询操作，比如，在JD上查询最热门的某商品。</li>
+<li><strong>混合事务和分析处理（HTAP）</strong>：同时支持上面的两种。<br>下面坐标系显示不同的workloads操作复杂度和读写分布：<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141055094.png" alt="Clip_2024-10-14_10-55-49.png"></li>
+</ol>
+<h1 id="Storage-Models"><a href="#Storage-Models" class="headerlink" title="Storage Models"></a>Storage Models</h1><p>数据库有着不同的工作负载，DBMS也有着相对应的不同的存储模型，不同的存储模型和相适配的工作负载组合，会让数据库的效率加倍，下面是DBMS的3种存储模型：<br><strong>Choice</strong> #<strong>1</strong>: N-ary Storage Model (NSM)                —&gt; 行存储<br><strong>Choice</strong> #2: Decomposition Storage Model (DSM)—-&gt;列存储<br><strong>Choice</strong> #3: Hybrid Storage Model (PAX)                —&gt;混合，常用列？</p>
+<h2 id="NSM"><a href="#NSM" class="headerlink" title="NSM"></a>NSM</h2><p>NSM的存储方式我们通常称为“<strong>行存储</strong>”，基本就是将一个元组的所有属性全部存储在同一个界面中，就相似一行一行这样的排列（NSM的页面大小通常是某种硬件界面的整数倍，比如Mysql：16kb）。<br>这种存储方式很适用于OLTP负载，方便进行读写操作。</p>
+<p><strong>OLTP EXAMPLE</strong><br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141112808.png" alt="Clip_2024-10-14_11-12-06.png"><br>对于这样的读操作，OLTP的场景下，是非常容易实现的，直接读取一行就获得了该元组的所有的信息。</p>
+<p><strong>OLAP EXAMPLE</strong><br>但是对于一个普通的OLAP查询就不太友好了：<br>下面这段查询的目的是统计不同月份内 <code>.gov</code> 域名的用户登录次数。通过分组，可以得到每个月份 <code>.gov</code> 用户登录的总次数。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141113997.png" alt="Clip_2024-10-14_11-13-40.png"><br>我们可以发现，在查询的过程中，我们仅仅需要lastlogin和hostname这两个属性，但是还是需要遍历全部的属性，这这样的效率就大打折扣了。</p>
+<p>总结一下，NSM 的优缺点如下：</p>
+<ul>
+<li>Advantages<ul>
+<li>高效插入、更新、删除，涉及表中小部分 tuples</li>
+<li>有利于需要整个 tuple （所有 attributes）的查询</li>
+</ul>
+</li>
+<li>Disadvantages<ul>
+<li>不利于需要检索表内大部分 tuples，或者只需要一小部分 attributes 的查询</li>
+</ul>
+</li>
+</ul>
+<h2 id="DSM"><a href="#DSM" class="headerlink" title="DSM"></a>DSM</h2><p>DSM是将所有元组的一个属性全部存储到同一张page中，我们也通常称之为“<strong>列存储</strong>”,这种存储方式特别使用于OLAP的，在这种情况下，查询是只读的，并且通常会对表的某些属性执行大规模扫描。</p>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202410141131408.png" alt="Clip_2024-10-14_11-31-47.png"></p>
+<p>将属性及元数据（例如，null 值）存储在单独的固定长度值数组中。</p>
+<ul>
+<li>大多数系统使用这些数组的偏移量来唯一标识物理元组。</li>
+<li>需要处理可变长度的值……</li>
+</ul>
+<p>为每个属性维护一个单独的文件，其中有一个专用的头部区域，用于存储整个列的元数，如下图所示：<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141130038.png" alt="Clip_2024-10-14_11-30-44.png"></p>
+<p><strong>OLAP EXAMPLE</strong><br>这样就可以很方便的查询想要某一属性的信息了。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141132542.png" alt="Clip_2024-10-14_11-32-08.png"></p>
+<p>由于 DSM 把 attributes 分开存储，也引入了新的问题，比如：<br>如何跟踪每个 tuple 的不同 attributes？可能的解决方案有：</p>
+<ol>
+<li>Fixed-length Offsets：每个 attribute 都是定长的，直接靠 offset 来跟踪（常用）</li>
+<li>Embedded Tuple Ids：在每个 attribute 前面都加上 tupleID</li>
+</ol>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202410141134316.png" alt="Clip_2024-10-14_11-34-13.png"></p>
+<p>总结一下，DSM 的优缺点如下：</p>
+<ul>
+<li>Advantages<ul>
+<li>减少 I&#x2F;O 操作</li>
+<li>更好的查询处理和数据压缩支持</li>
+</ul>
+</li>
+<li>Disadvantages<ul>
+<li>涉及少量 tuples、多数 attributes 的查询低效</li>
+</ul>
+</li>
+</ul>
+<h2 id="PAX"><a href="#PAX" class="headerlink" title="PAX"></a>PAX</h2><p>pax模型是一种混合存储模型，它有着列存储快速处理的优势，还有着列存储的空间优势。<br>那么它是如何做到的呢？下图：<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141416054.png" alt="Clip_2024-10-14_14-16-05.png"><br>它先把数据分成不同的行组（row group），然后同一属性的数据像列存储一样存在一起，然后其他的属性也一样，这些不同的属性组又通过行存储在一起，这样就是一个row group，通过全局的<strong>header</strong>来存储各个group的偏移量。</p>
+<h1 id="DATABASE-COMPRESS"><a href="#DATABASE-COMPRESS" class="headerlink" title="DATABASE COMPRESS"></a>DATABASE COMPRESS</h1><p>正如上面的核心问题所说的，这次的主要解决的是如何存放数据库文件在disk上。<br>在DBMS在从磁盘中提取数据进行查询时，I&#x2F;O是主要的瓶颈。主要是因为磁盘访问比CPU和内容慢的多，并且如果数据不在连续的存储在磁盘上，DBMS还要进行大量的随机I&#x2F;O操作，这大大提高了延迟。<br>所以为了缓解这一问题，我们要对数据进行压缩，争取每次交换都尽可能的获得更多的数据。<br>现在有以下的三个目标：</p>
+<ul>
+<li><strong>固定长度值</strong>：压缩必须生成固定长度的值（可变长度数据除外）。</li>
+<li><strong>推迟解压缩</strong>：尽量在查询执行的后期才进行解压缩操作，也称为“延迟物化”。</li>
+<li><strong>无损压缩</strong>：数据库压缩必须是无损的，以确保不会丢失数据。</li>
+</ul>
+<h2 id="Compress-Granularity"><a href="#Compress-Granularity" class="headerlink" title="Compress Granularity"></a>Compress Granularity</h2><p>压缩的粒度，颗粒程度？我也不知道为什么这一翻译，主要有以下几种：</p>
+<ul>
+<li><strong>块级压缩</strong>：对同一表的多个元组进行块压缩。</li>
+<li><strong>元组级压缩</strong>：压缩整个元组的内容，通常用于行存储模型（NSM）。</li>
+<li><strong>属性级压缩</strong>：压缩单个元组中的某个属性，可以应用于同一元组的多个属性。</li>
+<li><strong>列级压缩</strong>：压缩多个元组中一个或多个属性的值，通常用于列存储模型（DSM）。<br>我们接下来以列级压缩举例子，来展示各种不同的压缩方法。</li>
+</ul>
+<h2 id="Column-Compression"><a href="#Column-Compression" class="headerlink" title="Column Compression"></a>Column Compression</h2><ul>
+<li><p><strong>运行长度编码（Run-Length Encoding，RLE）</strong>：将同一列中连续相同的值压缩成三元组（值、开始位置、连续个数）。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141520499.png" alt="Clip_2024-10-14_15-20-27.png"></p>
+</li>
+<li><p><strong>位打包编码（Bit-Packing Encoding）</strong>：当整数属性的值小于其数据类型范围时，减少表示每个值的位数。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141528140.png" alt="Clip_2024-10-14_15-27-53.png"></p>
+</li>
+<li><p><strong>位图编码（Bitmap Encoding）</strong>：为每个属性的唯一值存储一个独立的位图，适用于低基数的值。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141528703.png" alt="Clip_2024-10-14_15-28-35.png"></p>
+</li>
+<li><p><strong>增量编码（Delta Encoding）</strong>：记录同一列中连续值之间的差异。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141528389.png" alt="Clip_2024-10-14_15-28-48.png"></p>
+</li>
+<li><p><strong>字典压缩（Dictionary Compression）</strong>：用较小的定长码替换频繁出现的值，并维护一个字典来映射这些码和原始值。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410141529723.png" alt="Clip_2024-10-14_15-29-00.png"><br>字典压缩的数据结构：</p>
+</li>
+</ul>
+<p>Choice # 1：数组<br>→ 一个包含可变长度字符串的数组和另一个指向字符串偏移量的指针数组。<br>→ 更新代价高，因此仅适用于不可变文件。</p>
+<p>Choice # 2：哈希表<br>→ 快速且紧凑。<br>→ 无法支持范围查询和前缀查询。</p>
+<p>Choice # 3：B+树<br>→ 比哈希表慢，占用更多内存。<br>→ 可以支持范围查询和前缀查询。</p>
 
         </div>
 
