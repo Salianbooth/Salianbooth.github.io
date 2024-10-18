@@ -308,7 +308,58 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> e.name, d.department_name</span><br><span class="line"><span class="keyword">FROM</span> employees e</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> departments d</span><br><span class="line"><span class="keyword">USING</span> (department_id);</span><br></pre></td></tr></table></figure>
 
 <p><strong>注意</strong>：<code>USING</code> 子句要求联结列在两个表中同名。</p>
-<h3 id="组合查询（Union）"><a href="#组合查询（Union）" class="headerlink" title="组合查询（Union）"></a>组合查询（Union）</h3><p>使用Union操作可以组合多条SQL查询，将结果组合成一个结果集。<br>使用Union很简单，只需要我们在要组合的select语句之间假设Union语句即可，例子如下：<br>假设我们有2个表，<code>current_employees</code>（当前员工）和 <code>former_employees</code>（前任员工）<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410170910431.png" alt="Clip_2024-10-17_09-10-49.png"></p>
+<h3 id="组合查询（Union）"><a href="#组合查询（Union）" class="headerlink" title="组合查询（Union）"></a>组合查询（Union）</h3><p>使用Union操作可以组合多条SQL查询，将结果组合成一个结果集。<br>使用Union很简单，只需要我们在要组合的select语句之间假设Union语句即可，例子如下：<br>假设我们有2个表，<code>current_employees</code>（当前员工）和 <code>former_employees</code>（前任员工）</p>
+<p><strong><code>current_employees</code> 表</strong></p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>department</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Alice</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Bob</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Charlie</td>
+<td>Engineering</td>
+</tr>
+</tbody></table>
+<p><strong><code>former_employees</code> 表</strong></p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>department</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>David</td>
+<td>HR</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Eva</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Frank</td>
+<td>Sales</td>
+</tr>
+</tbody></table>
+<p>创建一个联结视图，显示员工姓名、部门名称和工资。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 合并员工信息</span></span><br><span class="line"><span class="keyword">SELECT</span> id, name, department</span><br><span class="line"><span class="keyword">FROM</span> current_employees</span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> id, name, department</span><br><span class="line"><span class="keyword">FROM</span> former_employees;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>注意：如果两个表中存在完全相同的记录，<code>UNION</code> 会自动去除重复项。如果你希望包括所有重复记录，可以使用 <code>UNION ALL</code>。</p>
 <h1 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h1><p>视图的应用和表操作差不多，但是它是作为一个虚拟表存在的，它的作用就相当于是把select查询后的结果，生成到一张我们可以使用的虚拟表上，这样大大提高了语句的复用，还有着保护真表的数据的作用。<br>视图的作用挺多的，但是也有不少限制：</p>
@@ -320,7 +371,9 @@
 <h2 id="创建视图"><a href="#创建视图" class="headerlink" title="创建视图"></a><strong>创建视图</strong></h2><p>使用 <code>CREATE VIEW</code> 语句可以创建一个视图。以下是创建视图的基本语法和示例。</p>
 <h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a><strong>基本语法</strong></h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> 视图名称 <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> 列<span class="number">1</span>, 列<span class="number">2</span>, ...</span><br><span class="line"><span class="keyword">FROM</span> 表名</span><br><span class="line"><span class="keyword">WHERE</span> 条件;</span><br></pre></td></tr></table></figure>
 
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a><strong>示例</strong></h3><h2 id="假设有一个-employees-表，包含以下字段：id-name-department-salary。我们希望创建一个只显示员工姓名和部门的视图。-带条件的视图创建一个只显示工资高于50000的员工的视图。"><a href="#假设有一个-employees-表，包含以下字段：id-name-department-salary。我们希望创建一个只显示员工姓名和部门的视图。-带条件的视图创建一个只显示工资高于50000的员工的视图。" class="headerlink" title="假设有一个 employees 表，包含以下字段：id, name, department, salary。我们希望创建一个只显示员工姓名和部门的视图。### 带条件的视图创建一个只显示工资高于50000的员工的视图。"></a>假设有一个 <code>employees</code> 表，包含以下字段：<code>id</code>, <code>name</code>, <code>department</code>, <code>salary</code>。我们希望创建一个只显示员工姓名和部门的视图。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> employee_view <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> name, department</span><br><span class="line"><span class="keyword">FROM</span> employees;</span><br></pre></td></tr></table></figure><br>### <strong>带条件的视图</strong><br>创建一个只显示工资高于50000的员工的视图。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> high_salary_employees <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> name, department, salary</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> salary <span class="operator">&gt;</span> <span class="number">50000</span>;</span><br></pre></td></tr></table></figure></h2><h2 id="查询视图"><a href="#查询视图" class="headerlink" title="查询视图"></a><strong>查询视图</strong></h2><h2 id="视图可以像普通表一样进行查询。-查询所有数据-条件查询-联结视图与其他表-假设有另一个表-departments，可以将视图与该表联结。"><a href="#视图可以像普通表一样进行查询。-查询所有数据-条件查询-联结视图与其他表-假设有另一个表-departments，可以将视图与该表联结。" class="headerlink" title="视图可以像普通表一样进行查询。### 查询所有数据### 条件查询### ** 联结视图与其他表**假设有另一个表 departments，可以将视图与该表联结。"></a>视图可以像普通表一样进行查询。<br>### <strong>查询所有数据</strong><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> employee_view;</span><br></pre></td></tr></table></figure><br>### <strong>条件查询</strong><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> high_salary_employees</span><br><span class="line"><span class="keyword">WHERE</span> department <span class="operator">=</span> <span class="string">&#x27;Engineering&#x27;</span>;</span><br></pre></td></tr></table></figure><br>### ** 联结视图与其他表**<br>假设有另一个表 <code>departments</code>，可以将视图与该表联结。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ev.name, d.department_name</span><br><span class="line"><span class="keyword">FROM</span> employee_view ev</span><br><span class="line"><span class="keyword">JOIN</span> departments d <span class="keyword">ON</span> ev.department <span class="operator">=</span> d.id;</span><br></pre></td></tr></table></figure></h2><h2 id="更新视图"><a href="#更新视图" class="headerlink" title="更新视图"></a><strong>更新视图</strong></h2><p>视图在某些情况下可以用于更新数据，但有一些限制。通常，视图可以执行 <code>INSERT</code>、<code>UPDATE</code> 和 <code>DELETE</code> 操作，前提是视图基于单个表，并且不包含复杂的计算或聚合。</p>
+<p><strong>示例:</strong><br>假设有一个 <code>employees</code> 表，包含以下字段：<code>id</code>, <code>name</code>, <code>department</code>, <code>salary</code>。我们希望创建一个只显示员工姓名和部门的视图。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> employee_view <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> name, department</span><br><span class="line"><span class="keyword">FROM</span> employees;</span><br></pre></td></tr></table></figure>
+<h3 id="带条件的视图"><a href="#带条件的视图" class="headerlink" title="带条件的视图"></a><strong>带条件的视图</strong></h3><h2 id="创建一个只显示工资高于50000的员工的视图。"><a href="#创建一个只显示工资高于50000的员工的视图。" class="headerlink" title="创建一个只显示工资高于50000的员工的视图。"></a>创建一个只显示工资高于50000的员工的视图。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> high_salary_employees <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> name, department, salary</span><br><span class="line"><span class="keyword">FROM</span> employees</span><br><span class="line"><span class="keyword">WHERE</span> salary <span class="operator">&gt;</span> <span class="number">50000</span>;</span><br></pre></td></tr></table></figure></h2><h2 id="查询视图"><a href="#查询视图" class="headerlink" title="查询视图"></a><strong>查询视图</strong></h2><h2 id="视图可以像普通表一样进行查询。-查询所有数据-条件查询-联结视图与其他表假设有另一个表-departments，可以将视图与该表联结。"><a href="#视图可以像普通表一样进行查询。-查询所有数据-条件查询-联结视图与其他表假设有另一个表-departments，可以将视图与该表联结。" class="headerlink" title="视图可以像普通表一样进行查询。### 查询所有数据### 条件查询###  联结视图与其他表假设有另一个表 departments，可以将视图与该表联结。"></a>视图可以像普通表一样进行查询。<br>### <strong>查询所有数据</strong><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> employee_view;</span><br></pre></td></tr></table></figure><br>### <strong>条件查询</strong><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> high_salary_employees</span><br><span class="line"><span class="keyword">WHERE</span> department <span class="operator">=</span> <span class="string">&#x27;Engineering&#x27;</span>;</span><br></pre></td></tr></table></figure><br>###  联结视图与其他表<br>假设有另一个表 <code>departments</code>，可以将视图与该表联结。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ev.name, d.department_name</span><br><span class="line"><span class="keyword">FROM</span> employee_view ev</span><br><span class="line"><span class="keyword">JOIN</span> departments d <span class="keyword">ON</span> ev.department <span class="operator">=</span> d.id;</span><br></pre></td></tr></table></figure></h2><h2 id="更新视图"><a href="#更新视图" class="headerlink" title="更新视图"></a><strong>更新视图</strong></h2><p>视图在某些情况下可以用于更新数据，但有一些限制。通常，视图可以执行 <code>INSERT</code>、<code>UPDATE</code> 和 <code>DELETE</code> 操作，前提是视图基于单个表，并且不包含复杂的计算或聚合。</p>
 <h3 id="更新视图中的数据"><a href="#更新视图中的数据" class="headerlink" title="更新视图中的数据"></a><strong>更新视图中的数据</strong></h3><p>假设 <code>employee_view</code> 只包含 <code>name</code> 和 <code>department</code>，可以更新 <code>department</code>。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> employee_view</span><br><span class="line"><span class="keyword">SET</span> department <span class="operator">=</span> <span class="string">&#x27;Marketing&#x27;</span></span><br><span class="line"><span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;Alice&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
@@ -330,13 +383,6 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">VIEW</span> employee_view <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> name, department, salary</span><br><span class="line"><span class="keyword">FROM</span> employees;</span><br></pre></td></tr></table></figure>
 <h3 id="删除视图"><a href="#删除视图" class="headerlink" title="删除视图"></a><strong>删除视图</strong></h3><p>使用 <code>DROP VIEW</code> 语句可以删除视图。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">VIEW</span> IF <span class="keyword">EXISTS</span> employee_view;</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li><input disabled="" type="checkbox"> 存储过程</li>
-<li><input disabled="" type="checkbox"> 函数</li>
-<li><input disabled="" type="checkbox"> 游标</li>
-</ul>
 <h1 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h1><p><strong>存储过程（Stored Procedure）</strong> 是一段预编译的 SQL 代码，保存在数据库中，可以重复调用。你可以将存储过程理解为一个可以执行的 SQL 脚本，适用于需要重复使用或复杂的业务逻辑操作。</p>
 <p>本身就是用来封装一段SQL语句，进行复用，我的理解就是这个是可以没有return的函数（但是这只是粗浅的理解，实际上存储过程和函数区别和使用场景有着挺大的不同的）</p>
 <p>可以包含多种 SQL 语句，适合更复杂的操作，包括插入、更新、删除和事务控制。存储过程可以处理数据修改、事务管理等复杂</p>
