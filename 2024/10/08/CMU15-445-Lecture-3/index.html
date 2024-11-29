@@ -431,7 +431,7 @@
 <h2 id="Word-aligned-Turple"><a href="#Word-aligned-Turple" class="headerlink" title="Word-aligned Turple"></a>Word-aligned Turple</h2><ul>
 <li><p>为了让CPU能够有效地访问元组，DBMS会确保元组中的所有属性是<strong>字对齐</strong>（word-aligned）的，这可以避免非对齐读取所带来的额外工作或意外行为。</p>
 </li>
-<li><p>例如，一个64位CPU访问一个不对齐的32位数据时，可能会发生非对齐读取，导致性能下降。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410101552632.png" alt="Clip_2024-10-10_15-52-42.png"><br>现在有以下的几种方法：<br><strong>方法 #1：执行额外的读取</strong><br>→ 执行两次读取来加载数据字的适当部分并将它们重新组装。<br><strong>方法 #2：随机读取</strong><br>→ 读取一些意外组合的字节，将其组装成一个64位字。<br><strong>方法 #3：拒绝</strong><br>→ 抛出一个异常，并希望应用程序能处理它。</p>
+<li><p>例如，一个64位CPU访问一个不对齐的32位数据时，可能会发生非对齐读取，导致性能下降。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410101552632.png" alt="Clip_2024-10-10_15-52-42.png"><br>现在有以下的几种方法：<br><strong>方法 1：执行额外的读取</strong><br>→ 执行两次读取来加载数据字的适当部分并将它们重新组装。<br><strong>方法 2：随机读取</strong><br>→ 读取一些意外组合的字节，将其组装成一个64位字。<br><strong>方法 3：拒绝</strong><br>→ 抛出一个异常，并希望应用程序能处理它。</p>
 </li>
 </ul>
 <h3 id="Padding"><a href="#Padding" class="headerlink" title="Padding"></a>Padding</h3><ul>
@@ -624,7 +624,7 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2024/10/11/DB-Terminology-Hub-A-Guide-to-15-445/">DB Terminology Hub: A Guide to 15-445</a>
+                <a class="prev" rel="prev" href="/2024/10/14/CMU15-445-Lecture-4/">CMU15-445:Lecture 4</a>
             
             
             <a class="next" rel="next" href="/2024/10/05/CMU15-445-Lecture-2/">CMU15-445:Lecture 2</a>
