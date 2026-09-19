@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>CMU15-445:Lecture 1 - Alan Chen</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Alan Chen"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Alan Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="CMU15-445是卡内基梅隆大学的一门神级课程，由多名教授，经过历年的时间打造出的。这是一门数据库系统入门的课程，笔者所看的课程是23年fall的，是由Andy老师主讲的，每节课开始都由DJ，属于是传统了。而前3节课听下来，其中第一次课程由于学校的麦克风问题，导致音频有些地方没有录上音，于是我去看了中文版的讲解，并且在讲到第三节存储的时候回到英文课程中。而这门课程入门前还是需要一些数据库系统和"><meta property="og:type" content="blog"><meta property="og:title" content="CMU15-445:Lecture 1"><meta property="og:url" content="https://salianbooth.github.io/2024/09/29/CMU15445/CMU15-445-Lecture-1/"><meta property="og:site_name" content="Alan Chen"><meta property="og:description" content="CMU15-445是卡内基梅隆大学的一门神级课程，由多名教授，经过历年的时间打造出的。这是一门数据库系统入门的课程，笔者所看的课程是23年fall的，是由Andy老师主讲的，每节课开始都由DJ，属于是传统了。而前3节课听下来，其中第一次课程由于学校的麦克风问题，导致音频有些地方没有录上音，于是我去看了中文版的讲解，并且在讲到第三节存储的时候回到英文课程中。而这门课程入门前还是需要一些数据库系统和"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409291150699.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409291151810.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202410031112542.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202410031128940.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202410031131281.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202410031136967.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202410051541991.png"><meta property="article:published_time" content="2024-09-29T03:06:47.000Z"><meta property="article:modified_time" content="2024-10-05T07:45:22.000Z"><meta property="article:author" content="Alan Chen"><meta property="article:tag" content="Cpp"><meta property="article:tag" content="DB"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://gitee.com/salianbooth/picture/raw/master/202409291150699.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://salianbooth.github.io/2024/09/29/CMU15445/CMU15-445-Lecture-1/"},"headline":"CMU15-445:Lecture 1","image":["https://gitee.com/salianbooth/picture/raw/master/202409291150699.png","https://gitee.com/salianbooth/picture/raw/master/202409291151810.png","https://gitee.com/salianbooth/picture/raw/master/202410031112542.png","https://gitee.com/salianbooth/picture/raw/master/202410031128940.png","https://gitee.com/salianbooth/picture/raw/master/202410031131281.png","https://gitee.com/salianbooth/picture/raw/master/202410031136967.png","https://gitee.com/salianbooth/picture/raw/master/202410051541991.png"],"datePublished":"2024-09-29T03:06:47.000Z","dateModified":"2024-10-05T07:45:22.000Z","author":{"@type":"Person","name":"Alan Chen"},"publisher":{"@type":"Organization","name":"Alan Chen","logo":{"@type":"ImageObject","url":"https://salianbooth.github.io/img/logo.svg"}},"description":"CMU15-445是卡内基梅隆大学的一门神级课程，由多名教授，经过历年的时间打造出的。这是一门数据库系统入门的课程，笔者所看的课程是23年fall的，是由Andy老师主讲的，每节课开始都由DJ，属于是传统了。而前3节课听下来，其中第一次课程由于学校的麦克风问题，导致音频有些地方没有录上音，于是我去看了中文版的讲解，并且在讲到第三节存储的时候回到英文课程中。而这门课程入门前还是需要一些数据库系统和"}</script><link rel="canonical" href="https://salianbooth.github.io/2024/09/29/CMU15445/CMU15-445-Lecture-1/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Alan Chen" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Salianbooth"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-09-29T03:06:47.000Z" title="2024/9/29 11:06:47">2024-09-29</time>发表</span><span class="level-item"><time dateTime="2024-10-05T07:45:22.000Z" title="2024/10/5 15:45:22">2024-10-05</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/CMU15-445/">CMU15-445</a></span><span class="level-item">21 分钟读完 (大约3101个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">CMU15-445:Lecture 1</h1><div class="content"><blockquote>
+<p>CMU15-445是卡内基梅隆大学的一门神级课程，由多名教授，经过历年的时间打造出的。这是一门数据库系统入门的课程，笔者所看的课程是23年fall的，是由Andy老师主讲的，每节课开始都由DJ，属于是传统了。而前3节课听下来，其中第一次课程由于学校的麦克风问题，导致音频有些地方没有录上音，于是我去看了<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1bQ4y1Y7iT/?spm_id_from=333.999.0.0">中文版的讲解</a>，并且在讲到第三节存储的时候回到英文课程中。<br>而这门课程入门前还是需要一些数据库系统和SQL语法基础的，正好笔者这学期在学数据库系统概念这门课程，算是相辅相成了。话不多说，直接开始第一章。</p>
+</blockquote>
+<h1 id="DATA-BASE"><a href="#DATA-BASE" class="headerlink" title="DATA BASE"></a>DATA BASE</h1><p>在学习数据库系统时，我们要搞清楚什么是数据库，什么是数据库系统，还有我们经常说的MySQL到底是什么东西。这些问题都会一一解决，首先我们先来看什么是数据库。</p>
+<blockquote>
+<p>Organized collection of inter-related data that models some aspect of the real-world. Databases are the core component of most computer applications.</p>
+</blockquote>
+<p>上面的话是课程ppt的原话，意思是：数据库（<strong>databases</strong>）是由相互关联的数据组成的有组织的集合，它通常用于对现实世界的某些方面进行建模或表示。换句话说，数据库用来存储和管理与实际问题或情况有关的数据，比如一家公司客户信息、销售记录等。由于数据库能够系统地存储、检索和管理大量数据，它们成为了大多数计算机应用程序的核心组件。</p>
+<p>下面，我们就举一个简单的数据库的例子：<br>我们创建一个模拟数字音乐商店的数据库，以跟踪艺术家和专辑。我们需要存储一下的一些信息：</p>
+<ul>
+<li>艺术家的信息</li>
+<li>艺术家什么时候发布的专辑<br>我们如何存储呢？Store our database as comma-separated value (CSV) files.</li>
+</ul>
+<p>(CSV) files that we manage in our own code.</p>
+<ul>
+<li>Use a separate file per entity（每一个实体使用一个单独的文件，例如：Artist 和 Album）</li>
+<li>The application has to parse the files each time they want to read&#x2F;update records.（应用程序需要在读取或者更新记录时解析这些文件）<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409291150699.png" alt="Clip_2024-09-29_11-50-46.png"><br>Example: Get the year that GZA went solo.我们可以写一个 python 程序，遍历文件中的所有行，通过 parse 函数将行记录解析成数据，然后判断数组的第一个值是否等于 GZA，相等则返回第二个值。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409291151810.png" alt="Clip_2024-09-29_11-51-33.png"></li>
+</ul>
+<p>通过这种方式查找数据会存在一些问题，这些问题也是我们想要构建一个数据库管理系统的动机。具体问题如下：</p>
+<ol>
+<li><p><strong>DATA INTEGRITY（数据完整性）</strong></p>
+<ul>
+<li><p>How do we ensure that the artist is the same for each album entry? 我们如何保证 artist 艺术家信息和 album 专辑中的艺术家信息相同？例如：Ice Cube 拼写错误，或者 Ice Cube 修改了自己的名字，album 表如何保证数据的一致？数据库中使用外键保证？</p>
+</li>
+<li><p>What if somebody overwrites the album year with an invalid string? 我们该如何保证对不同类型数据的存储是有效的，例如 year 输入了非法值</p>
+</li>
+<li><p>How do we store that there are multiple artists on an album? 如果一个专辑是多个艺术家创作的，我们该如何存储？</p>
+</li>
+</ul>
+</li>
+<li><p><strong>IMPLEMENTATION（实现）</strong></p>
+<ul>
+<li><p>How do you find a particular record? 如何去查找一条具体的记录？如果有 10 亿条数据，for 循环的方式就无法高效处理。</p>
+</li>
+<li><p>What if we now want to create a new application that uses the same database? 如何实现数据库逻辑的复用，示例中是使用 python 实现的数据库查询逻辑，其他语言无法复用。</p>
+</li>
+<li><p>What if two threads try to write to the same file at the same time? 如果两个线程同时尝试写入同一个数据文件，该如何处理？如果不进行特殊处理，很可能会出现记录的覆盖，第一个线程修改的内容将会丢失。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>DURABILITY（持久性）</strong></p>
+<ul>
+<li><p>What if the machine crashes while our program is updating a record? 当程序正在更新一条记录时，此时程序或者机器宕机了，记录是更新完了，还是只更新了一半？我该如何推断它的正确状态呢？</p>
+</li>
+<li><p>What if we want to replicate the database on multiple machines for high availability? 因为机器的不可靠性，我们会考虑将数据库文件复制到不同的机器上以保证高可用。如果一台机器崩溃了，还可以使用备库提供服务。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="DBMS"><a href="#DBMS" class="headerlink" title="DBMS"></a>DBMS</h1><p>基于以上存在的各种问题，我们需要有一个通用的数据库解决方案，也就是数据库管理系统 DBMS。那么什么是数据库管理系统呢？</p>
+<p>database management system（数据库管理系统） 简称DBMS，s software that allows applications to store and analyze information in a database.<br>DBMS是介于软件和数据库之间的，能够使应用能存储和分析数据库里的信息。</p>
+<p>A general-purpose DBMS supports the definition, creation, querying, update, and administration of databases in accordance with some data model.（DBMS应该支持的功能）</p>
+<h2 id="Data-models"><a href="#Data-models" class="headerlink" title="Data models"></a>Data models</h2><p>A data model is a collection of concepts for describing the data in a database.<br><strong>数据模型</strong>是描述数据库中数据的概念的集合。从本质上讲，它定义了数据在数据库系统中的<strong>存储、管理和操作</strong>方式。</p>
+<p>A schema is a description of a particular collection of data, using a given data model.<br><strong>模式</strong>是使用给定数据模型对特定数据集合的描述。</p>
+<ul>
+<li>Relational——关系模型，大部分的 DBMS 都采用了关系模型，本课程重点内容。</li>
+<li>Key&#x2F;Value——NoSQL （由于sql是使用的关系模型，所以其他的模型都称为NoSQL–”Not Only SQL”）</li>
+<li>Graph——NoSQL</li>
+<li>Document——NoSQL</li>
+<li>Column-family——NoSQL</li>
+<li>Array &#x2F; Matrix——数组和矩阵模型，通常会在机器学习中使用</li>
+<li>Hierarchical——层次数据模型（很古老的模型）</li>
+<li>Network——网络数据模型（很古老的模型）</li>
+</ul>
+<p>数据模型的组成要素：数据结构，数据操作，数据的完整性约束。</p>
+<h2 id="Early-DBMSs"><a href="#Early-DBMSs" class="headerlink" title="Early  DBMSs"></a>Early  DBMSs</h2><p>Early database applications were difficult to build and maintain on available DBMSs in the 1960s.<br>基于当时可用的数据库管理系统（DBMS）开发和维护数据库应用程序是十分困难的。</p>
+<p>→ Examples: IDS, IMS, CODASYL<br>→ Computers were expensive, humans were cheap. 当时计算机昂贵，而人力成本较低。</p>
+<p>Tight coupling between logical and physical layers.<br>逻辑层和物理层之间的紧密耦合导致开发复杂。  </p>
+<p>Programmers had to (roughly) know what queries the application would execute before they could deploy the database.<br>程序员在部署数据库之前，必须大致了解应用程序会执行哪些查询。</p>
+<p>Ted Codd发现了这个问题，为了避免人们重复地进行编码和重构，Codd saw IBM’s developers rewriting database programs every time the database’s schema or layout changed.<br>Devised the relational model in 1969.<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410031112542.png" alt="Clip_2024-10-03_11-12-07.png"></p>
+<h2 id="RELATIONAL-MODEL"><a href="#RELATIONAL-MODEL" class="headerlink" title="RELATIONAL MODEL"></a>RELATIONAL MODEL</h2><p>The relational model defines a database abstraction based on relations to avoid maintenance overhead.<br>关系模型定义了一种基于关系的数据库抽象，以避免维护的额外负担。</p>
+<p>它有一下的3个关键的<strong>原则</strong> ：<br>→ 以简单的数据结构（关系）存储数据库。<br>→ 物理存储由数据库管理系统（DBMS）实现决定。<br>→ 通过高级语言访问数据，DBMS会自动确定最佳执行策略。</p>
+<p><strong>三要素</strong></p>
+<ul>
+<li><strong>Structure（关系结构）</strong>: The definition of relations and their contents. 关系及其内容的定义。</li>
+<li><strong>Integrity（数据完整性约束）</strong>: Ensure the database’s contents satisfy constraints. 保证数据库内容满足约束条件。</li>
+<li><strong>Manipulation（操纵）</strong>: How to access and modify a database’s contents. 如何访问和修改数据库的内容。</li>
+</ul>
+<h3 id="相关术语"><a href="#相关术语" class="headerlink" title="相关术语"></a>相关术语</h3><ul>
+<li><p><strong>relation 关系</strong> is unordered set that contain the relationship of attributes that represent entities. 对应一张表格。</p>
+</li>
+<li><p><strong>tuple 元组</strong>is a set of attribute values (also known as its domain) in the relation.对应表格中的一行。<br>  → Values are (normally) atomic&#x2F;scalar.<br>  → The special value NULL is a member of every domain (if allowed).<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202410031128940.png" alt="Clip_2024-10-03_11-28-26.png"></p>
+</li>
+<li><p><strong>primary key 主键</strong>是唯一一个标记一个元组的属性（例如身份证）。如果没用定义主键，一些DBMS会自动船舰一个内部的主键。<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202410031131281.png" alt="Clip_2024-10-03_11-30-59.png"></p>
+</li>
+<li><p><strong>foreign key 外键</strong> 是指将一个元组中的属性映射到另外一个元组的属性上，可以用来维护不同关系之间的数据一致性。<br>  比如说，我有三张表分别是，学生信息表，课程信息表，还有学生选课信息表，其中学生选课信息表中的学号和课程号就分别来自其他的2个表，这样就称学号和课程号是SC表的外键。<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202410031136967.png" alt="Clip_2024-10-03_11-36-32.png"></p>
+</li>
+</ul>
+<h1 id="DML"><a href="#DML" class="headerlink" title="DML"></a>DML</h1><p><strong>Data Manipulation Languages (DML)</strong>，即<strong>数据操作语言</strong>，是用于在数据库中查询、插入、更新和删除数据的一类语言。在关系数据库管理系统中，DML是一部分SQL（结构化查询语言），专注于数据的操作和管理。</p>
+<p>以下是DML的主要功能：</p>
+<ol>
+<li><p><strong>查询数据 (SELECT)</strong>：用于从数据库中检索数据。</p>
+<ul>
+<li>示例：<code>SELECT * FROM Employees;</code><ul>
+<li>该语句从表 <code>Employees</code> 中检索所有的记录。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>插入数据 (INSERT)</strong>：用于向数据库的表中插入新数据。</p>
+<ul>
+<li>示例：<code>INSERT INTO Employees (Name, Age) VALUES (&#39;John&#39;, 30);</code><ul>
+<li>该语句向 <code>Employees</code> 表中插入一条新记录，名字为John，年龄为30。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>更新数据 (UPDATE)</strong>：用于修改已存在的数据。</p>
+<ul>
+<li>示例：<code>UPDATE Employees SET Age = 31 WHERE Name = &#39;John&#39;;</code><ul>
+<li>该语句将 <code>Employees</code> 表中名字为John的员工的年龄更新为31。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>删除数据 (DELETE)</strong>：用于删除数据库中的数据。</p>
+<ul>
+<li>示例：<code>DELETE FROM Employees WHERE Age = 31;</code><ul>
+<li>该语句删除所有年龄为31的员工记录。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="Relational-Algebra"><a href="#Relational-Algebra" class="headerlink" title="Relational Algebra"></a>Relational Algebra</h2><p>Fundamental operations to retrieve and manipulate tuples in a relation. 检索和操作关系中的元组的基本操作。</p>
+<ul>
+<li><p>Based on set algebra. 基于集合的代数。<br>Each operator takes one or more relations as its inputs and outputs a new relation. 每个操作符以一个或多个关系作为其输入，并输出一个新的关系。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202410051541991.png" alt="Clip_2024-10-05_15-40-58.png"></p>
+</li>
+<li><p><strong>选择 (Select, σ)</strong>: 通过选择谓词筛选元组（行），相当于过滤操作。</p>
+<ul>
+<li>语法: σpredicate(R)</li>
+<li>示例: σa_id&#x3D;’a2’(R) 返回所有 <code>a_id=&#39;a2&#39;</code> 的行。</li>
+</ul>
+</li>
+<li><p><strong>投影 (Projection, π)</strong>: 只返回指定的属性（列）。</p>
+<ul>
+<li>语法: ΠA1,A2,…,An(R)</li>
+<li>示例: Πb_id-100,a_id(σa_id&#x3D;’a2’(R)) 移除无关列并操作列的值。</li>
+</ul>
+</li>
+<li><p><strong>并集 (Union, ∪)</strong>: 返回两个输入关系中的所有元组。</p>
+<ul>
+<li>语法: (R ∪ S)</li>
+</ul>
+</li>
+<li><p><strong>交集 (Intersection, ∩)</strong>: 仅返回出现在两个关系中的元组。</p>
+<ul>
+<li>语法: (R ∩ S)</li>
+</ul>
+</li>
+<li><p><strong>差集 (Difference, −)</strong>: 返回在第一个关系中但不在第二个关系中的元组。</p>
+<ul>
+<li>语法: (R − S)</li>
+</ul>
+</li>
+<li><p><strong>笛卡尔积 (Product, ×)</strong>: 生成两个关系中所有元组的组合。</p>
+<ul>
+<li>语法: (R × S)</li>
+</ul>
+</li>
+<li><p><strong>连接 (Join, ⋈)</strong>: 通过共同属性值将两个关系中的元组合并。</p>
+<ul>
+<li>语法: (R ⋈ S)</li>
+</ul>
+</li>
+</ul>
+<p>这些内容都很简单，无需过多的理解，想要深入了解，可以去b站看<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1W3411y7dw/?spm_id_from=333.999.0.0&vd_source=b2413ecf60f1e8b5a48adcc77ce32005">《数据库系统概论》</a>这门课的讲解。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>CMU15-445:Lecture 1</p><p><a href="https://salianbooth.github.io/2024/09/29/CMU15445/CMU15-445-Lecture-1/">https://salianbooth.github.io/2024/09/29/CMU15445/CMU15-445-Lecture-1/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Alan Chen</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2024-09-29</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2024-10-05</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Cpp/">Cpp</a><a class="link-muted mr-2" rel="tag" href="/tags/DB/">DB</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/10/05/CMU15445/CMU15-445-Lecture-2/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">CMU15-445:Lecture 2</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/09/17/CS106L/CS106L-Lecture-6/"><span class="level-item">CS106L:Lecture 6</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.jpg" alt="Alan Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Alan Chen</p><p class="is-size-6 is-block">Computer Science · AI · Chip Design</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">5</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">7</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Salianbooth" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/Salianbooth"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="//atom.xml"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CMU15-445/"><span class="level-start"><span class="level-item">CMU15-445</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/CS106L/"><span class="level-start"><span class="level-item">CS106L</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Log/"><span class="level-start"><span class="level-item">Log</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/book/"><span class="level-start"><span class="level-item">book</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/self-learning/"><span class="level-start"><span class="level-item">self-learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-19T08:05:01.198Z">2026-09-19</time></p><p class="title"><a href="/2026/09/19/%E7%AE%97%E6%B3%95/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-19T08:05:01.193Z">2026-09-19</time></p><p class="title"><a href="/2026/09/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-19T06:32:23.032Z">2026-09-19</time></p><p class="title"><a href="/2026/09/19/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-11-26T07:08:53.000Z">2024-11-26</time></p><p class="title"><a href="/2024/11/26/Data-Structrue-and-Algorithms/">Data Structrue and Algorithms</a></p><p class="categories"><a href="/categories/self-learning/">self-learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-10-23T11:21:26.000Z">2024-10-23</time></p><p class="title"><a href="/2024/10/23/CMU15445/CMU15-445-lab0/">CMU15-445:lab0</a></p><p class="categories"><a href="/categories/CMU15-445/">CMU15-445</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2026/09/"><span class="level-start"><span class="level-item">九月 2026</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">十一月 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">十月 2024</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">九月 2024</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">八月 2024</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Cpp/"><span class="tag">Cpp</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DB/"><span class="tag">DB</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Markdown/"><span class="tag">Markdown</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySQL/"><span class="tag">MySQL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/malloc/"><span class="tag">malloc</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><span class="tag">多线程</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Alan Chen" height="28"></a><p class="is-size-7"><span>&copy; 2026 Alan Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2026 Alan Chen</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Salianbooth"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/mhchem.min.js" defer></script><script>window.addEventListener("load", function() {
+            document.querySelectorAll('[role="article"] > .content').forEach(function(element) {
+                renderMathInElement(element);
+            });
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

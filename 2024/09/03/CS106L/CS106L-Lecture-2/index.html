@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>CS106L:Lecture 2 - Alan Chen</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Alan Chen"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Alan Chen"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Stream stream流这一部分在C++Primer这本书里面我都是随便一看就过去了，没想到这门课竟然开始就在讲，那还是简单看一下吧。  1.Overview我们在编程中会经常想让我们的程序和外部的设备沟通，比方说控制台&amp;amp;键盘，文件等等。 接下来，我们就以console（控制台为例），我们怎么样才能将一个Data 对象打印在console上呢？  开始，我们应该会把这个Data对象转换"><meta property="og:type" content="blog"><meta property="og:title" content="CS106L:Lecture 2"><meta property="og:url" content="https://salianbooth.github.io/2024/09/03/CS106L/CS106L-Lecture-2/"><meta property="og:site_name" content="Alan Chen"><meta property="og:description" content="Stream stream流这一部分在C++Primer这本书里面我都是随便一看就过去了，没想到这门课竟然开始就在讲，那还是简单看一下吧。  1.Overview我们在编程中会经常想让我们的程序和外部的设备沟通，比方说控制台&amp;amp;键盘，文件等等。 接下来，我们就以console（控制台为例），我们怎么样才能将一个Data 对象打印在console上呢？  开始，我们应该会把这个Data对象转换"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409040933571.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409040934451.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409040935095.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409040937784.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409040944656.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409040945216.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409041058925.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409041058252.png"><meta property="og:image" content="https://gitee.com/salianbooth/picture/raw/master/202409041058579.png"><meta property="article:published_time" content="2024-09-03T12:09:52.000Z"><meta property="article:modified_time" content="2024-09-16T09:12:16.000Z"><meta property="article:author" content="Alan Chen"><meta property="article:tag" content="Cpp"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://gitee.com/salianbooth/picture/raw/master/202409040933571.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://salianbooth.github.io/2024/09/03/CS106L/CS106L-Lecture-2/"},"headline":"CS106L:Lecture 2","image":["https://gitee.com/salianbooth/picture/raw/master/202409040933571.png","https://gitee.com/salianbooth/picture/raw/master/202409040934451.png","https://gitee.com/salianbooth/picture/raw/master/202409040935095.png","https://gitee.com/salianbooth/picture/raw/master/202409040937784.png","https://gitee.com/salianbooth/picture/raw/master/202409040944656.png","https://gitee.com/salianbooth/picture/raw/master/202409040945216.png","https://gitee.com/salianbooth/picture/raw/master/202409041058925.png","https://gitee.com/salianbooth/picture/raw/master/202409041058252.png","https://gitee.com/salianbooth/picture/raw/master/202409041058579.png"],"datePublished":"2024-09-03T12:09:52.000Z","dateModified":"2024-09-16T09:12:16.000Z","author":{"@type":"Person","name":"Alan Chen"},"publisher":{"@type":"Organization","name":"Alan Chen","logo":{"@type":"ImageObject","url":"https://salianbooth.github.io/img/logo.svg"}},"description":"Stream stream流这一部分在C++Primer这本书里面我都是随便一看就过去了，没想到这门课竟然开始就在讲，那还是简单看一下吧。  1.Overview我们在编程中会经常想让我们的程序和外部的设备沟通，比方说控制台&amp;键盘，文件等等。 接下来，我们就以console（控制台为例），我们怎么样才能将一个Data 对象打印在console上呢？  开始，我们应该会把这个Data对象转换"}</script><link rel="canonical" href="https://salianbooth.github.io/2024/09/03/CS106L/CS106L-Lecture-2/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Alan Chen" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Salianbooth"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-09-03T12:09:52.000Z" title="2024/9/3 20:09:52">2024-09-03</time>发表</span><span class="level-item"><time dateTime="2024-09-16T09:12:16.000Z" title="2024/9/16 17:12:16">2024-09-16</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/CS106L/">CS106L</a></span><span class="level-item">24 分钟读完 (大约3567个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">CS106L:Lecture 2</h1><div class="content"><h1 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h1><blockquote>
+<p>stream流这一部分在<a href="https://salianbooth.github.io/2024/08/02/C-Primer-learning/">C++Primer</a>这本书里面我都是随便一看就过去了，没想到这门课竟然开始就在讲，那还是简单看一下吧。</p>
+</blockquote>
+<h2 id="1-Overview"><a href="#1-Overview" class="headerlink" title="1.Overview"></a>1.Overview</h2><p>我们在编程中会经常想让我们的程序和外部的设备沟通，比方说控制台&amp;键盘，文件等等。</p>
+<p>接下来，我们就以console（控制台为例），我们怎么样才能将一个Data 对象打印在console上呢？<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409040933571.png" alt="Clip_2024-09-04_09-33-48.png"></p>
+<ul>
+<li>开始，我们应该会把这个Data对象转换成一个string<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202409040934451.png" alt="Clip_2024-09-04_09-34-56.png"></li>
+<li>然后，将这个string写入console中。<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202409040935095.png" alt="Clip_2024-09-04_09-35-36.png"></li>
+</ul>
+<p>那么，我们如何从文件中读取到一个双精度的值呢？</p>
+<ul>
+<li>我们可以先从File中读出character并且把它转换成一个string</li>
+<li>然后，再将string转换成double<br>  <img src="https://gitee.com/salianbooth/picture/raw/master/202409040937784.png" alt="Clip_2024-09-04_09-37-01.png"></li>
+</ul>
+<p>总的来说，有2个主要的步骤：</p>
+<p><strong>一</strong>：我们需要以字符串形式从数据源获取或发送数据。</p>
+<p><strong>二</strong>：我们需要在程序中的数据和其字符串表示之间进行转换。</p>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202409040944656.png" alt="Clip_2024-09-04_09-44-19.png"></p>
+<p>这样就引出了Stream-&gt;Streams 为我们提供了一个与外部输入交互的统一接口。</p>
+<p>你可以将流想象成一个自动与外部数据源交互的字符缓冲区。</p>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202409040945216.png" alt="Clip_2024-09-04_09-45-46.png"></p>
+<h2 id="2-Stringstream"><a href="#2-Stringstream" class="headerlink" title="2.Stringstream"></a>2.Stringstream</h2><p><code>stringstream</code> is a type of stream not connected to any external device. Instead, it operates on a string, allowing you to extract data from or insert data into a string as if it were a stream.</p>
+<p>Examples include using <code>istringstream</code> for input and <code>ostringstream</code> for output.</p>
+<h3 id="2-1stringstream-constructors"><a href="#2-1stringstream-constructors" class="headerlink" title="2.1stringstream constructors"></a>2.1stringstream constructors</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">istringstream</span> <span class="title function_">iss</span><span class="params">(“Initial”)</span>; </span><br><span class="line"><span class="built_in">ostringstream</span> <span class="title function_">oss</span><span class="params">(“Initial”)</span>; </span><br><span class="line"></span><br><span class="line"><span class="built_in">ostringstream</span> <span class="title function_">oss</span><span class="params">(“Initial“, <span class="built_in">stringstream</span>::ate)</span>; </span><br><span class="line"><span class="built_in">istringstream</span> <span class="title function_">iss</span><span class="params">(“Initial“, <span class="built_in">stringstream</span>::bin)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到这2组constructors是有所不同的，为什么后面的加上了stringstream::ate或者stringstream::bin呢？<br>其实是<code>stringstream</code>（以及其他类型的流，如<code>ifstream</code>, <code>ofstream</code>等）内部是使用指针（通常称为流指针）来管理数据的读取和写入位置。<br>而对于我们上面的那一组：</p>
+<ol>
+<li><p><strong><code>ostringstream oss(&quot;Initial&quot;, stringstream::ate);</code></strong></p>
+<ul>
+<li><strong>Type</strong>: Output string stream (<code>ostringstream</code>)</li>
+<li><strong>Mode</strong>: Text mode with the <code>ate</code> flag</li>
+<li><strong>Behavior</strong>: Creates an output string stream with the initial content <code>&quot;Initial&quot;</code>. The <code>ate</code> flag moves the write pointer to the end of the initial content, so any new data written to the stream will be appended to the end of <code>&quot;Initial&quot;</code>  –&gt; 指针是移动到initial的末尾，这样新添加的数据会加到 <code>“Initial”</code>的后面，而不会覆盖了</li>
+</ul>
+</li>
+<li><p><strong><code>istringstream iss(&quot;Initial&quot;, stringstream::bin);</code></strong></p>
+<ul>
+<li><strong>Type</strong>: Input string stream (<code>istringstream</code>)</li>
+<li><strong>Mode</strong>: Binary mode (<code>bin</code>)</li>
+<li><strong>Behavior</strong>: Creates an input string stream with the initial content <code>&quot;Initial&quot;</code>, but in binary mode. This means the stream will treat the content as raw binary data, without interpreting any control characters like newlines. –&gt;采用二进制模式。这意味着流会将内容视为原始二进制数据，而不会解释任何控制字符，如换行符。</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-2whitespace-separated-token"><a href="#2-2whitespace-separated-token" class="headerlink" title="2.2whitespace separated token"></a>2.2whitespace separated token</h3><p>A <strong>whitespace-separated token</strong> refers to a segment of text in a string that is separated by one or more whitespace characters, such as spaces, tabs, or newlines. When processing input, streams in C++ typically read data up until they encounter a whitespace, which marks the boundary of a token.<br><strong>以空格分隔的标记</strong>是指字符串中由一个或多个空格字符（如空格、制表符或换行符）分隔的文本段。在处理输入时，C++ 中的流通常会读取数据，直到遇到空格，这标志着标记标记的边界</p>
+<p>For example, given the string:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;16.9 Ounces \t -38271&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>This string contains three whitespace-separated tokens:</p>
+<ul>
+<li><code>&quot;16.9&quot;</code></li>
+<li><code>&quot;Ounces&quot;</code></li>
+<li><code>&quot;-38271&quot;</code></li>
+</ul>
+<p>When you read from a stream using the <code>&gt;&gt;</code> operator, it extracts data until it hits a whitespace, thus separating the string into these tokens. The type of data you’re reading (e.g., int, string, double) also affects how the token is interpreted.  （你所读取的类型也会对这个有所影响）</p>
+<p>For example:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::istringstream <span class="title">iss</span><span class="params">(<span class="string">&quot;Hello world 42&quot;</span>)</span></span>;</span><br><span class="line">std::string word;</span><br><span class="line"><span class="type">int</span> number;</span><br><span class="line"></span><br><span class="line">iss &gt;&gt; word;  <span class="comment">// Reads &quot;Hello&quot;</span></span><br><span class="line">iss &gt;&gt; word;  <span class="comment">// Reads &quot;world&quot;</span></span><br><span class="line">iss &gt;&gt; number;  <span class="comment">// Reads 42</span></span><br></pre></td></tr></table></figure>
+
+<p>In this case:</p>
+<ul>
+<li><code>&quot;Hello&quot;</code> is the first token, separated from the next token <code>&quot;world&quot;</code> by a space.</li>
+<li><code>&quot;world&quot;</code> is the second token, separated from <code>&quot;42&quot;</code> by another space.</li>
+<li><code>42</code> is the third token.</li>
+</ul>
+<h3 id="2-3Behavior-in-Streams"><a href="#2-3Behavior-in-Streams" class="headerlink" title="2.3Behavior in Streams"></a>2.3Behavior in Streams</h3><ul>
+<li><p><strong>Textual Types (<code>std::string</code>, <code>char</code>)</strong>:</p>
+<ul>
+<li>The stream will read a sequence of non-whitespace characters until it encounters a whitespace character, at which point it stops and considers that sequence a token.</li>
+</ul>
+</li>
+<li><p><strong>Numerical Types (<code>int</code>, <code>double</code>)</strong>:</p>
+<ul>
+<li>The stream will attempt to read a valid number. It stops reading either when it encounters a whitespace character or when it hits a character that is invalid for the type (e.g., a letter in the middle of a number).</li>
+</ul>
+</li>
+</ul>
+<p>For instance:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::istringstream <span class="title">iss</span><span class="params">(<span class="string">&quot;123abc 456&quot;</span>)</span></span>;</span><br><span class="line"><span class="type">int</span> num;</span><br><span class="line">iss &gt;&gt; num;  <span class="comment">// Reads &quot;123&quot;, stops at &quot;a&quot; because it&#x27;s not valid for an int.</span></span><br><span class="line">std::cout &lt;&lt; num;  <span class="comment">// Outputs: 123</span></span><br></pre></td></tr></table></figure>
+
+<p>Here, the stream stops reading as soon as it hits the letter <code>&#39;a&#39;</code>, which is not valid for an integer, resulting in <code>123</code> being the token that is extracted. （int类型，在读到’a’这个字符后就停止了）</p>
+<h4 id="Key-Points"><a href="#Key-Points" class="headerlink" title="Key Points:"></a>Key Points:</h4><ul>
+<li><strong>Whitespace as a Delimiter</strong>: The stream uses whitespace to determine where one token ends and another begins.</li>
+<li><strong>Tokenization</strong>: The process of splitting the input based on whitespace is often referred to as tokenization.</li>
+<li><strong>Type-Dependent Behavior</strong>: The stream reads input differently depending on the expected type (<code>int</code>, <code>float</code>, <code>std::string</code>), stopping at the first invalid character or whitespace.</li>
+</ul>
+<h3 id="2-4stringstream-positioning-functions-（了解？）"><a href="#2-4stringstream-positioning-functions-（了解？）" class="headerlink" title="2.4stringstream positioning functions （了解？）"></a>2.4stringstream positioning functions （了解？）</h3><p><code>std::stringstream</code> 类允许你将字符串当作一个流来处理，其中包括读取和写入操作。为了更好地控制流中的数据处理，C++ 提供了一些函数用于管理 <code>stringstream</code> 的内部位置指针。这些函数也同样适用于其他流对象，如 <code>std::ifstream</code> 和 <code>std::ofstream</code>。以下是常用的定位函数：</p>
+<h4 id="1-tellg"><a href="#1-tellg" class="headerlink" title="1. tellg()"></a>1. <code>tellg()</code></h4><ul>
+<li><strong>作用</strong>：获取当前读取位置的索引。</li>
+<li><strong>返回值</strong>：流中的当前位置，以字节数（position）的形式返回。如果操作失败，则返回 <code>-1</code>。</li>
+<li><strong>用法</strong>：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::stringstream <span class="title">ss</span><span class="params">(<span class="string">&quot;Hello, world!&quot;</span>)</span></span>;</span><br><span class="line">std::streampos pos = ss.<span class="built_in">tellg</span>();  <span class="comment">// 获取当前位置</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-tellp"><a href="#2-tellp" class="headerlink" title="2. tellp()"></a>2. <code>tellp()</code></h4><ul>
+<li><strong>作用</strong>：获取当前写入位置的索引。</li>
+<li><strong>返回值</strong>：流中的当前位置，以字节数（position）的形式返回。如果操作失败，则返回 <code>-1</code>。</li>
+<li><strong>用法</strong>：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::stringstream ss;</span><br><span class="line">ss &lt;&lt; <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">std::streampos pos = ss.<span class="built_in">tellp</span>();  <span class="comment">// 获取当前位置</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-seekg-pos"><a href="#3-seekg-pos" class="headerlink" title="3. seekg(pos)"></a>3. <code>seekg(pos)</code></h4><ul>
+<li><strong>作用</strong>：设置流的读取位置为 <code>pos</code> 指定的位置。</li>
+<li><strong>参数</strong>：<code>pos</code> 是目标位置（以字节数表示）。</li>
+<li><strong>用法</strong>：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::stringstream <span class="title">ss</span><span class="params">(<span class="string">&quot;Hello, world!&quot;</span>)</span></span>;</span><br><span class="line">ss.<span class="built_in">seekg</span>(<span class="number">7</span>);  <span class="comment">// 设置读取位置到第 7 个字节</span></span><br><span class="line"><span class="type">char</span> ch;</span><br><span class="line">ss &gt;&gt; ch;  <span class="comment">// 现在 ch == &#x27;w&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="4-seekp-pos"><a href="#4-seekp-pos" class="headerlink" title="4. seekp(pos)"></a>4. <code>seekp(pos)</code></h4><ul>
+<li><strong>作用</strong>：设置流的写入位置为 <code>pos</code> 指定的位置。</li>
+<li><strong>参数</strong>：<code>pos</code> 是目标位置（以字节数表示）。</li>
+<li><strong>用法</strong>：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::stringstream ss;</span><br><span class="line">ss &lt;&lt; <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">ss.<span class="built_in">seekp</span>(<span class="number">2</span>);  <span class="comment">// 设置写入位置到第 2 个字节</span></span><br><span class="line">ss &lt;&lt; <span class="string">&quot;XX&quot;</span>;  <span class="comment">// 原来字符串中的第三个和第四个字符被替换成 &#x27;XX&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ul>
+<li>Q1: What exactly does &gt;&gt; do?<ul>
+<li>A1：The <code>&gt;&gt;</code> operator is known as the <strong>extraction operator</strong> in C++. It is used with input streams (like <code>std::cin</code>, <code>std::ifstream</code>, <code>std::istringstream</code>) to extract data from the stream into variables. （读取数据，直到第一个空格）</li>
+</ul>
+</li>
+<li>Q2:Why can you chain &lt;&lt; and &gt;&gt;?<ul>
+<li>A2:The &gt;&gt; and &lt;&lt; operators return a reference to the stream itself, so in each instance the stream is the left-hand operand.—–因为每次操作后，流对象仍然作为操作符的左侧操作数继续使用，这使得链式操作成为可能。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-State-bits"><a href="#3-State-bits" class="headerlink" title="3.State bits"></a>3.State bits</h2><p>这一部分之前在<a href="https://salianbooth.github.io/2024/08/02/C-Primer-learning/">C++Primer</a>上有了解过，但是也是一笔带过，这里再进行一遍复习。<br><img src="https://gitee.com/salianbooth/picture/raw/master/202409041058925.png" alt="Clip_2024-09-04_10-58-21.png"></p>
+<p>以下是主要的流状态标志及其含义：</p>
+<ol>
+<li><p><strong>eofbit</strong>（end-of-file bit）</p>
+<ul>
+<li>表示流到达文件末尾。</li>
+<li>当读取操作尝试从流中读取数据，但已到达文件末尾时设置。</li>
+<li>可以使用<code>eof()</code>成员函数检查。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (inputFile.<span class="built_in">eof</span>()) &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Reached end of file.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>failbit</strong>（fail bit）</p>
+<ul>
+<li>表示一次非致命性格式错误或其他输入&#x2F;输出操作失败。</li>
+<li>通常在尝试读取类型不匹配的数据时设置。</li>
+<li>可以使用<code>fail()</code>成员函数检查。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (inputFile.<span class="built_in">fail</span>()) &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Input operation failed.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>badbit</strong>（bad bit）</p>
+<ul>
+<li>表示流出现不可恢复的错误，如物理读写错误。</li>
+<li>一旦设置，流通常无法再继续使用。</li>
+<li>可以使用<code>bad()</code>成员函数检查。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (inputFile.<span class="built_in">bad</span>()) &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Irrecoverable stream error.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>goodbit</strong>（good bit）</p>
+<ul>
+<li>表示流状态正常，没有错误。</li>
+<li>可以使用<code>good()</code>成员函数检查。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (inputFile.<span class="built_in">good</span>()) &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Stream is in good state.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202409041058252.png" alt="Clip_2024-09-04_10-58-36.png"></p>
+<p><img src="https://gitee.com/salianbooth/picture/raw/master/202409041058579.png" alt="Clip_2024-09-04_10-58-54.png"></p>
+<h2 id="4-Input-Output-Stream"><a href="#4-Input-Output-Stream" class="headerlink" title="4.Input&#x2F;Output Stream"></a>4.Input&#x2F;Output Stream</h2><h3 id="4-1-Flush"><a href="#4-1-Flush" class="headerlink" title="4.1 Flush"></a>4.1 Flush</h3><ol>
+<li><p><strong>缓冲流：字符先存储在一个中间缓冲区中，然后才会被移动到外部目标。</strong></p>
+<ul>
+<li>当你在编写程序时，输出的数据（例如字符或字符串）并不会立刻被发送到终端、文件或其他外部设备。相反，这些数据会先存储在一个临时的内存区域中，这个区域称为<strong>缓冲区</strong>。缓冲区用于暂时存储数据，直到有足够的数据积累后再一起发送，以提高程序的性能。</li>
+</ul>
+</li>
+<li><p><strong>为了将字符推送到外部目标，必须“刷新”流。</strong></p>
+<ul>
+<li>如果你想立即将缓冲区中的数据发送到外部设备或目标（例如，显示在屏幕上或写入文件中），需要<strong>刷新</strong>流。刷新操作会将缓冲区中的所有数据立刻发送出去，而不是等待缓冲区填满或者程序结束时自动刷新。</li>
+</ul>
+</li>
+</ol>
+<p><strong>对于cout来说，有一些特殊情况</strong>：<br><code>cout</code>（标准输出流）通常情况下会使用缓冲区来暂存数据，而不是每次输出操作后都立即刷新到屏幕。这种缓冲机制可以提高输出操作的效率。不过，有几种情况会触发 <code>cout</code> 自动刷新缓冲区：</p>
+<ol>
+<li><p><strong>遇到换行符（<code>\n</code>）时</strong>：</p>
+<ul>
+<li>在大多数实现中，当 <code>cout</code> 输出一个换行符（<code>\n</code>）时，它会自动刷新缓冲区，将所有已输出的数据立即发送到屏幕。这是为了确保换行之前的内容及时显示。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; <span class="string">&quot;Hello, world!\n&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>Hello, world!</code> 后的 <code>\n</code> 会触发 <code>cout</code> 的自动刷新。</p>
+</li>
+<li><p><strong>使用 <code>std::endl</code> 时</strong>：</p>
+<ul>
+<li><code>std::endl</code> 是一个特殊的操作符，它不仅会插入一个换行符，还会强制刷新 <code>cout</code> 的缓冲区。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; <span class="string">&quot;Hello, world!&quot;</span> &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>std::endl</code> 不仅会输出换行，还会立即刷新缓冲区。</p>
+</li>
+<li><p><strong>程序正常结束时</strong>：</p>
+<ul>
+<li>当程序正常结束或 <code>cout</code> 被关闭时，标准库会自动刷新 <code>cout</code> 的缓冲区，将所有未输出的数据发送到屏幕。</li>
+</ul>
+</li>
+<li><p><strong>当 <code>cin</code> 被使用时</strong>：</p>
+<ul>
+<li>如前所述，当 <code>cin</code> 开始读取输入时，标准输出缓冲区也会自动刷新，以确保所有输出的内容在输入提示之前已经显示给用户。</li>
+</ul>
+</li>
+</ol>
+<h3 id="Q-A-1"><a href="#Q-A-1" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ol>
+<li><p><strong>When does the program prompt the user for input?<br> 程序何时提示用户输入？</strong></p>
+<ul>
+<li>The program prompts the user for input whenever an <code>input operation</code> like <code>cin &gt;&gt;</code> is encountered, and it requires data to be read from the standard input. If there is no data in the input buffer or the program needs more data, it will “hang” and wait for the user to provide input.<br>  每当遇到 <code>cin &gt;&gt;</code> 之类的<code>输入操作</code>时，程序都会提示用户输入，并且它要求从标准输入中读取数据。如果 input buffer 中没有数据或程序需要更多数据，它将 “挂起” 并等待用户提供 input。</li>
+</ul>
+</li>
+<li><p><strong>Why does the <code>cout</code> operation not immediately print the output onto the console? When is the output printed?<br> 为什么 <code>cout</code> 操作没有立即将输出打印到控制台上？何时打印输出？</strong></p>
+<ul>
+<li><code>cout</code> is buffered, meaning it stores output data in a buffer and doesn’t necessarily print it immediately to the console. The output is printed when:<br>  <code>cout</code> 是缓冲的，这意味着它将输出数据存储在缓冲区中，并且不必立即将其打印到控制台。在以下情况下打印输出：<ul>
+<li>The buffer is full.</li>
+<li>A newline (<code>\n</code>) is encountered, which often triggers a flush.<br>  遇到换行符 （<code>\n</code>），这通常会触发 flush。</li>
+<li><code>std::endl</code> is used, which inserts a newline and forces a flush.<br>  <code>std：：endl</code> 的 intent 插入换行符并强制刷新。</li>
+<li>The program finishes or exits, which triggers a flush.</li>
+<li><code>std::flush</code> is explicitly called to manually flush the buffer.<br>  显式调用 <code>std：：flush</code> 来手动刷新缓冲区。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Does the position pointer skip whitespace before the token or after the token with each <code>&gt;&gt;</code> operation?<br> 位置指针在每次 <code>&gt;&gt;</code> 操作时是否会跳过令牌之前或之后的空格？</strong></p>
+<ul>
+<li>The position pointer skips whitespace <strong>before</strong> the token with each <code>&gt;&gt;</code> operation. This means that when extracting a value using <code>cin &gt;&gt;</code>, any leading spaces, newlines, or tabs are ignored before reading the actual token.<br>  位置指针在每次 <code>&gt;&gt;</code> 操作中跳过标记<strong>前</strong>的空格。这意味着，使用 <code>cin &gt;&gt;</code> 提取值时，在读取实际标记之前，将忽略任何前导空格、换行符或制表符。</li>
+</ul>
+</li>
+<li><p><strong>Does the position pointer always read up to a whitespace? If not, provide a counterexample.<br> 位置指针是否总是读取到空格？如果没有，请提供一个反例。</strong></p>
+<ul>
+<li><p>The position pointer generally reads up to a whitespace, which is why it stops reading tokens like integers, floats, or strings when it encounters spaces, newlines, or tabs.<br>  位置指针通常读取到空格，这就是为什么当遇到空格、换行符或制表符时，它会停止读取整数、浮点数或字符串等标记。</p>
+</li>
+<li><p><strong>Counterexample</strong>: Consider the input <code>&quot;86.2&quot;</code>. If you extract an <code>int</code> from this input:</p>
+<p>  <code>int number; std::cin &gt;&gt; number;</code></p>
+<p>  The <code>int</code> extraction reads up to the first non-numeric character, stopping at the decimal point, so <code>number</code> would be <code>86</code>. The position pointer will then be positioned at the decimal point, not a whitespace.<br>  <strong>反例</strong>：考虑输入 <code>“86.2”。</code>如果从此输入中提取 <code>int</code>：<code>int</code> 提取最多读取第一个非数字字符，在小数点后停止，因此<code>数字</code>将为 <code>86</code>。然后，位置指针将位于小数点，而不是空格处。</p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>ok，以上基本就是这一节课的基本内容了，虽然不多，但是有很多的细节去发掘，仅仅是整理这些资料就花了我1h的时间，只能说有一点收获吧。</p>
+</blockquote>
+</div><div class="article-licensing box"><div class="licensing-title"><p>CS106L:Lecture 2</p><p><a href="https://salianbooth.github.io/2024/09/03/CS106L/CS106L-Lecture-2/">https://salianbooth.github.io/2024/09/03/CS106L/CS106L-Lecture-2/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Alan Chen</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2024-09-03</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2024-09-16</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Cpp/">Cpp</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/09/04/CS106L/CS106L-Lecture-3/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">CS106L:Lecture 3</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/09/03/CS106L/CS106L-Lecture-1/"><span class="level-item">CS106L:Lecture 1</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.jpg" alt="Alan Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Alan Chen</p><p class="is-size-6 is-block">Computer Science · AI · Chip Design</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shanghai</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">5</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">7</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Salianbooth" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/Salianbooth"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="//atom.xml"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/CMU15-445/"><span class="level-start"><span class="level-item">CMU15-445</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/CS106L/"><span class="level-start"><span class="level-item">CS106L</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Log/"><span class="level-start"><span class="level-item">Log</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/book/"><span class="level-start"><span class="level-item">book</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/self-learning/"><span class="level-start"><span class="level-item">self-learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-19T08:05:01.198Z">2026-09-19</time></p><p class="title"><a href="/2026/09/19/%E7%AE%97%E6%B3%95/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-19T08:05:01.193Z">2026-09-19</time></p><p class="title"><a href="/2026/09/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-19T06:32:23.032Z">2026-09-19</time></p><p class="title"><a href="/2026/09/19/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-11-26T07:08:53.000Z">2024-11-26</time></p><p class="title"><a href="/2024/11/26/Data-Structrue-and-Algorithms/">Data Structrue and Algorithms</a></p><p class="categories"><a href="/categories/self-learning/">self-learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-10-23T11:21:26.000Z">2024-10-23</time></p><p class="title"><a href="/2024/10/23/CMU15445/CMU15-445-lab0/">CMU15-445:lab0</a></p><p class="categories"><a href="/categories/CMU15-445/">CMU15-445</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2026/09/"><span class="level-start"><span class="level-item">九月 2026</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">十一月 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">十月 2024</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">九月 2024</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">八月 2024</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Cpp/"><span class="tag">Cpp</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DB/"><span class="tag">DB</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Markdown/"><span class="tag">Markdown</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySQL/"><span class="tag">MySQL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/malloc/"><span class="tag">malloc</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><span class="tag">多线程</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Alan Chen" height="28"></a><p class="is-size-7"><span>&copy; 2026 Alan Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2026 Alan Chen</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Salianbooth"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/mhchem.min.js" defer></script><script>window.addEventListener("load", function() {
+            document.querySelectorAll('[role="article"] > .content').forEach(function(element) {
+                renderMathInElement(element);
+            });
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
